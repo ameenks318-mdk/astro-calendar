@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Astronomical Calendar — Celestial events, scientist birthdays, achievements, and memorial days in physics and chemistry.">
+    <title>Astronomical Calendar — Baselius College, Kottayam</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+    <style>
+        /* ── RESET & BASE ── */
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; }
+        body {
+            font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background:#f8f9fb;
+            color:#1a1a2e;
+            min-height:100vh;
+            -webkit-font-smoothing:antialiased;
+        }
+
+        /* ── LAYOUT ── */
+        .app {
+            display:flex;
+            height:100vh;
+            overflow:hidden;
+        }
+
+        /* ── LEFT SIDEBAR ── */
+        .sidebar {
+            width:320px;
+            min-width:320px;
+            background:#fff;
+            border-right:1px solid #e8eaed;
+            display:flex;
+            flex-direction:column;
+            overflow:hidden;
+        }
+
+        .sidebar-header {
+            padding:20px 20px 16px;
+            border-bottom:1px solid #e8eaed;
+            background:#fff;
+        }
+
+        .college-brand {
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            text-align:center;
+            margin-bottom:14px;
+            padding-bottom:14px;
+            border-bottom:1px solid #f0f1f3;
+        }
+
+        .college-logo {
+            width:72px;
+            height:72px;
+            border-radius:50%;
+            object-fit:contain;
+            margin-bottom:10px;
+            border:2px solid #e8eaed;
+            padding:4px;
+            background:#fff;
+        }
+
+        .college-name {
+            font-size:.88rem;
+            font-weight:800;
+            color:#1a1a2e;
+            letter-spacing:.3px;
+            line-height:1.3;
+            text-transform:uppercase;
+        }
+
+        .college-sub {
+            font-size:.65rem;
+            font-weight:500;
+            color:#8b8fa3;
+            margin-top:3px;
+            letter-spacing:.3px;
+        }
+
+        .college-dept {
+            font-size:.62rem;
+            font-weight:600;
+            color:#4f46e5;
+            margin-top:6px;
+            text-transform:uppercase;
+            letter-spacing:1px;
+            background:rgba(79,70,229,.06);
+            padding:4px 12px;
+            border-radius:12px;
+        }
+
+        /* Search */
+        .search-box {
+            position:relative;
+            margin-top:12px;
+        }
+
+        .search-box input {
+            width:100%;
+            padding:9px 12px 9px 36px;
+            border:1px solid #e8eaed;
+            border-radius:8px;
+            font-size:.82rem;
+            font-family:inherit;
+            color:#1a1a2e;
+            background:#f8f9fb;
+            outline:none;
+            transition:.2s;
+        }
+
+        .search-box input:focus {
+            border-color:#4f46e5;
+            background:#fff;
+            box-shadow:0 0 0 3px rgba(79,70,229,.08);
+        }
+
+        .search-box input::placeholder { color:#b0b3c1; }
+
+        .search-box .s-icon {
+            position:absolute;
+            left:10px;
+            top:50%;
+            transform:translateY(-50%);
+            font-size:18px;
+            color:#b0b3c1;
+        }
+
+        .search-box .clear {
+            position:absolute;
+            right:8px;
+            top:50%;
+            transform:translateY(-50%);
+            background:none;
+            border:none;
+            color:#b0b3c1;
+            cursor:pointer;
+            font-size:16px;
+            display:none;
+            font-family:'Material Symbols Rounded';
+        }
+
+        .search-box .clear.show { display:block; }
+
+        /* Filters */
+        .filters {
+            padding:14px 24px;
+            border-bottom:1px solid #f0f1f3;
+        }
+
+        .filters-title {
+            font-size:.65rem;
+            font-weight:600;
+            text-transform:uppercase;
+            letter-spacing:1px;
+            color:#8b8fa3;
+            margin-bottom:8px;
+        }
+
+        .filter-list {
+            display:flex;
+            flex-direction:column;
+            gap:3px;
+        }
+
+        .filter-item {
+            display:flex;
+            align-items:center;
+            gap:8px;
+            padding:6px 8px;
+            border-radius:6px;
+            cursor:pointer;
+            transition:.15s;
+            font-size:.78rem;
+            font-weight:500;
+            color:#3d3d56;
+            user-select:none;
+        }
+
+        .filter-item:hover { background:#f4f5f7; }
+        .filter-item.off { opacity:.4; }
+
+        .filter-dot {
+            width:10px;
+            height:10px;
+            border-radius:3px;
+            flex-shrink:0;
+        }
+
+        .filter-count {
+            margin-left:auto;
+            font-size:.65rem;
+            font-weight:600;
+            color:#b0b3c1;
+            background:#f4f5f7;
+            padding:1px 6px;
+            border-radius:4px;
+        }
+
+        /* Event List */
+        .event-list-section {
+            flex:1;
+            overflow:hidden;
+            display:flex;
+            flex-direction:column;
+        }
+
+        .event-list-header {
+            padding:14px 24px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            border-bottom:1px solid #f0f1f3;
+        }
+
+        .event-list-header h2 {
+            font-size:.82rem;
+            font-weight:700;
+            color:#1a1a2e;
+        }
+
+        .event-list-header .badge {
+            font-size:.65rem;
+            font-weight:700;
+            color:#4f46e5;
+            background:rgba(79,70,229,.08);
+            padding:2px 8px;
+            border-radius:10px;
+        }
+
+        .event-list {
+            flex:1;
+            overflow-y:auto;
+            padding:8px 16px 16px;
+        }
+
+        .event-list::-webkit-scrollbar { width:4px; }
+        .event-list::-webkit-scrollbar-track { background:transparent; }
+        .event-list::-webkit-scrollbar-thumb { background:#e0e1e5; border-radius:2px; }
+
+        .ev-card {
+            padding:10px 12px;
+            border-radius:8px;
+            cursor:pointer;
+            transition:.15s;
+            border-left:3px solid transparent;
+            margin-bottom:2px;
+        }
+
+        .ev-card:hover { background:#f4f5f7; }
+
+        .ev-card .ev-date {
+            font-size:.6rem;
+            font-weight:600;
+            text-transform:uppercase;
+            letter-spacing:.8px;
+            margin-bottom:2px;
+        }
+
+        .ev-card .ev-title {
+            font-size:.8rem;
+            font-weight:600;
+            color:#1a1a2e;
+            line-height:1.35;
+            margin-bottom:2px;
+        }
+
+        .ev-card .ev-desc {
+            font-size:.7rem;
+            color:#8b8fa3;
+            line-height:1.4;
+        }
+
+        .ev-empty {
+            text-align:center;
+            padding:40px 20px;
+            color:#b0b3c1;
+            font-size:.82rem;
+        }
+
+        .ev-empty span { font-size:36px; display:block; margin-bottom:8px; }
+
+        /* ── MAIN CONTENT ── */
+        .main {
+            flex:1;
+            display:flex;
+            flex-direction:column;
+            overflow:hidden;
+            background:#fff;
+        }
+
+        /* Top Bar */
+        .topbar {
+            display:flex;
+            align-items:center;
+            padding:14px 28px;
+            border-bottom:1px solid #e8eaed;
+            gap:16px;
+            flex-shrink:0;
+        }
+
+        .nav-btn {
+            width:34px;
+            height:34px;
+            border:1px solid #e0e1e5;
+            border-radius:8px;
+            background:#fff;
+            color:#4a4a5a;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:18px;
+            transition:.15s;
+            font-family:'Material Symbols Rounded';
+        }
+
+        .nav-btn:hover { background:#f4f5f7; border-color:#c8c9d0; }
+
+        .month-label {
+            font-size:1.3rem;
+            font-weight:700;
+            color:#1a1a2e;
+            min-width:220px;
+            letter-spacing:-.5px;
+        }
+
+        .today-btn {
+            padding:7px 16px;
+            border:1px solid #e0e1e5;
+            border-radius:8px;
+            background:#fff;
+            color:#4f46e5;
+            font-size:.78rem;
+            font-weight:600;
+            cursor:pointer;
+            transition:.15s;
+            font-family:inherit;
+        }
+
+        .today-btn:hover { background:#4f46e5; color:#fff; border-color:#4f46e5; }
+
+        .stats-pills {
+            display:flex;
+            gap:6px;
+            margin-left:auto;
+        }
+
+        .stat-pill {
+            display:flex;
+            align-items:center;
+            gap:4px;
+            padding:5px 10px;
+            border-radius:6px;
+            font-size:.68rem;
+            font-weight:600;
+            background:#f8f9fb;
+            border:1px solid #f0f1f3;
+        }
+
+        .stat-pill .sp-dot {
+            width:7px;
+            height:7px;
+            border-radius:2px;
+        }
+
+        /* ── CALENDAR GRID ── */
+        .calendar-wrap {
+            flex:1;
+            display:flex;
+            flex-direction:column;
+            overflow:hidden;
+        }
+
+        .weekdays {
+            display:grid;
+            grid-template-columns:repeat(7,1fr);
+            border-bottom:1px solid #e8eaed;
+            flex-shrink:0;
+        }
+
+        .weekdays div {
+            padding:10px 0;
+            text-align:center;
+            font-size:.7rem;
+            font-weight:600;
+            text-transform:uppercase;
+            letter-spacing:1px;
+            color:#8b8fa3;
+        }
+
+        .cal-grid {
+            flex:1;
+            display:grid;
+            grid-template-columns:repeat(7,1fr);
+            grid-auto-rows:1fr;
+            overflow:hidden;
+        }
+
+        .cal-cell {
+            border-right:1px solid #f0f1f3;
+            border-bottom:1px solid #f0f1f3;
+            padding:6px 8px;
+            cursor:pointer;
+            transition:.1s;
+            overflow:hidden;
+            display:flex;
+            flex-direction:column;
+            min-height:0;
+        }
+
+        .cal-cell:nth-child(7n) { border-right:none; }
+        .cal-cell:hover { background:#f8f9fb; }
+
+        .cal-cell.other { opacity:.3; pointer-events:none; }
+
+        .cal-cell.today .cell-day {
+            background:#4f46e5;
+            color:#fff;
+            border-radius:50%;
+            width:28px;
+            height:28px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+
+        .cal-cell.selected {
+            background:#eef2ff;
+        }
+
+        .cal-cell.selected .cell-day:not(.today .cell-day) {
+            color:#4f46e5;
+            font-weight:800;
+        }
+
+        .cell-day {
+            font-size:.82rem;
+            font-weight:600;
+            color:#3d3d56;
+            margin-bottom:4px;
+            flex-shrink:0;
+            width:28px;
+            height:28px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+
+        .cell-events {
+            display:flex;
+            flex-direction:column;
+            gap:2px;
+            flex:1;
+            overflow:hidden;
+        }
+
+        .cell-ev {
+            font-size:.62rem;
+            font-weight:500;
+            padding:1px 5px;
+            border-radius:3px;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            line-height:1.5;
+            flex-shrink:0;
+        }
+
+        .cell-more {
+            font-size:.58rem;
+            font-weight:600;
+            color:#8b8fa3;
+            padding:1px 5px;
+        }
+
+        /* Event type colors — light & clean */
+        .t-astro { border-left-color:#4f46e5; }
+        .t-astro .ev-date { color:#4f46e5; }
+        .c-astro { background:#eef2ff; color:#4338ca; }
+        .d-astro { background:#4f46e5; }
+
+        .t-birthday { border-left-color:#d97706; }
+        .t-birthday .ev-date { color:#d97706; }
+        .c-birthday { background:#fef9ee; color:#b45309; }
+        .d-birthday { background:#d97706; }
+
+        .t-memorial { border-left-color:#dc2626; }
+        .t-memorial .ev-date { color:#dc2626; }
+        .c-memorial { background:#fef2f2; color:#b91c1c; }
+        .d-memorial { background:#dc2626; }
+
+        .t-achievement { border-left-color:#059669; }
+        .t-achievement .ev-date { color:#059669; }
+        .c-achievement { background:#ecfdf5; color:#047857; }
+        .d-achievement { background:#059669; }
+
+        .t-moon { border-left-color:#7c3aed; }
+        .t-moon .ev-date { color:#7c3aed; }
+        .c-moon { background:#f5f3ff; color:#6d28d9; }
+        .d-moon { background:#7c3aed; }
+
+        .t-eclipse { border-left-color:#ea580c; }
+        .t-eclipse .ev-date { color:#ea580c; }
+        .c-eclipse { background:#fff7ed; color:#c2410c; }
+        .d-eclipse { background:#ea580c; }
+
+        .t-intl { border-left-color:#0284c7; }
+        .t-intl .ev-date { color:#0284c7; }
+        .c-intl { background:#f0f9ff; color:#0369a1; }
+        .d-intl { background:#0284c7; }
+
+        /* ── MODAL ── */
+        .modal-overlay {
+            position:fixed;
+            inset:0;
+            background:rgba(0,0,0,.3);
+            backdrop-filter:blur(4px);
+            z-index:1000;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            opacity:0;
+            visibility:hidden;
+            transition:.25s;
+        }
+
+        .modal-overlay.on { opacity:1; visibility:visible; }
+
+        .modal-box {
+            background:#fff;
+            border-radius:16px;
+            padding:0;
+            max-width:520px;
+            width:92%;
+            max-height:80vh;
+            overflow:hidden;
+            display:flex;
+            flex-direction:column;
+            transform:translateY(12px) scale(.97);
+            transition:.25s;
+            box-shadow:0 20px 60px rgba(0,0,0,.12), 0 0 0 1px rgba(0,0,0,.04);
+        }
+
+        .modal-overlay.on .modal-box { transform:translateY(0) scale(1); }
+
+        .modal-top {
+            padding:24px 28px 16px;
+            display:flex;
+            align-items:flex-start;
+            gap:14px;
+            border-bottom:1px solid #f0f1f3;
+        }
+
+        .modal-icon {
+            font-size:32px;
+            flex-shrink:0;
+            line-height:1;
+        }
+
+        .modal-top-text { flex:1; }
+
+        .modal-title {
+            font-size:1.05rem;
+            font-weight:700;
+            color:#1a1a2e;
+            line-height:1.35;
+            margin-bottom:4px;
+        }
+
+        .modal-type {
+            font-size:.7rem;
+            font-weight:600;
+            text-transform:uppercase;
+            letter-spacing:.5px;
+        }
+
+        .modal-close {
+            width:32px;
+            height:32px;
+            border:1px solid #e8eaed;
+            border-radius:8px;
+            background:#fff;
+            color:#8b8fa3;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:18px;
+            transition:.15s;
+            flex-shrink:0;
+            font-family:'Material Symbols Rounded';
+        }
+
+        .modal-close:hover { background:#f4f5f7; color:#1a1a2e; }
+
+        .modal-body {
+            padding:20px 28px 28px;
+            overflow-y:auto;
+        }
+
+        .modal-body p {
+            font-size:.88rem;
+            line-height:1.75;
+            color:#4a4a5a;
+        }
+
+        .modal-field {
+            margin-top:14px;
+            padding-top:14px;
+            border-top:1px solid #f0f1f3;
+            font-size:.78rem;
+            color:#8b8fa3;
+        }
+
+        .modal-field strong { color:#3d3d56; font-weight:600; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width:1024px) {
+            .sidebar { display:none; }
+        }
+
+        @media (max-width:768px) {
+            .stats-pills { display:none; }
+            .month-label { font-size:1rem; min-width:auto; }
+            .cell-events { display:none; }
+            .cell-day { font-size:.72rem; }
+            .topbar { padding:10px 16px; }
+        }
+
+        /* ── SCROLLBAR GLOBAL ── */
+        ::-webkit-scrollbar { width:6px; }
+        ::-webkit-scrollbar-track { background:transparent; }
+        ::-webkit-scrollbar-thumb { background:#e0e1e5; border-radius:3px; }
+    </style>
+</head>
+<body>
+<div class="app">
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="college-brand">
+                <img src="logo.png" onerror="this.src='https://baselius.ac.in/wp-content/uploads/2024/03/cropped-baselius-Photoroom-192x192.png'" alt="Baselius College Logo" class="college-logo">
+                <div class="college-name">Baselius College (Autonomous)</div>
+                <div class="college-sub">Kottayam, Kerala</div>
+                <div class="college-dept">🔭 Astronomical Calendar</div>
+            </div>
+            <div class="search-box">
+                <span class="s-icon material-symbols-rounded">search</span>
+                <input type="text" id="searchInput" placeholder="Search events, scientists…" autocomplete="off">
+                <button class="clear" id="clearBtn" onclick="clearSearch()">close</button>
+            </div>
+        </div>
+
+        <div class="event-list-section">
+            <div class="event-list-header">
+                <h2 id="evListTitle">Events</h2>
+                <span class="badge" id="evCount">0</span>
+            </div>
+            <div class="event-list" id="evList"></div>
+        </div>
+    </aside>
+
+    <!-- ── MAIN ── -->
+    <main class="main">
+        <div class="topbar">
+            <button class="nav-btn" onclick="changeMonth(-1)">chevron_left</button>
+            <button class="nav-btn" onclick="changeMonth(1)">chevron_right</button>
+            <div class="month-label" id="monthLabel"></div>
+            <button class="today-btn" onclick="goToday()">Today</button>
+            <div class="stats-pills" id="statsPills"></div>
+        </div>
+
+        <div class="calendar-wrap">
+            <div class="weekdays">
+                <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+            </div>
+            <div class="cal-grid" id="calGrid"></div>
+        </div>
+    </main>
+</div>
+
+<!-- ── MODAL ── -->
+<div class="modal-overlay" id="mOverlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal-box">
+        <div class="modal-top">
+            <div class="modal-icon" id="mIcon"></div>
+            <div class="modal-top-text">
+                <div class="modal-title" id="mTitle"></div>
+                <div class="modal-type" id="mType"></div>
+            </div>
+            <button class="modal-close" onclick="closeModal()">close</button>
+        </div>
+        <div class="modal-body" id="mBody"></div>
+    </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════
+const E=[
+// ── ASTRONOMICAL ──
+{m:1,d:2,t:'astro',i:'☀️',n:'Earth at Perihelion',x:'Earth reaches its closest point to the Sun at ~147.1 million km. Despite being closest, the Northern Hemisphere has winter due to axial tilt of 23.44°.',f:'Orbital Mechanics'},
+{m:1,d:3,t:'astro',i:'☄️',n:'Quadrantids Meteor Shower Peak',x:'One of the strongest annual showers with up to 120 meteors/hour. Originates from asteroid 2003 EH1 (possibly a dead comet). Best viewed after midnight.',f:'Meteor Shower'},
+{m:2,d:18,t:'astro',i:'🔴',n:'Pluto Discovery Anniversary (1930)',x:'Clyde Tombaugh discovered Pluto at Lowell Observatory, Arizona by comparing photographic plates. Reclassified as dwarf planet in 2006.',f:'Discovery'},
+{m:3,d:13,t:'astro',i:'🪐',n:'Discovery of Uranus (1781)',x:'William Herschel spotted Uranus with his homemade telescope from his garden in Bath, England — the first planet discovered since antiquity.',f:'Discovery'},
+{m:3,d:14,t:'astro',i:'🥧',n:'Pi Day',x:'Celebrated on 3/14 matching π ≈ 3.14159… Also Einstein\'s birthday. Pi is fundamental to circles, waves, quantum mechanics, and all of physics.',f:'Mathematics'},
+{m:3,d:20,t:'astro',i:'🌸',n:'Vernal Equinox',x:'Sun crosses the celestial equator northward. Day and night ~equal worldwide. Beginning of spring (Northern Hemisphere).',f:'Seasonal'},
+{m:4,d:12,t:'astro',i:'🚀',n:'Cosmonautics Day — Gagarin\'s Flight (1961)',x:'Yuri Gagarin became the first human in space aboard Vostok 1, orbiting Earth in 108 minutes. "Poyekhali!" (Let\'s go!)',f:'Space History'},
+{m:4,d:22,t:'astro',i:'☄️',n:'Lyrids Meteor Shower Peak',x:'One of the oldest known showers — observed for 2,700 years since 687 BC. 10-20 meteors/hour from Comet Thatcher.',f:'Meteor Shower'},
+{m:5,d:5,t:'astro',i:'☄️',n:'Eta Aquarids Meteor Shower Peak',x:'Debris from Halley\'s Comet! Up to 60 meteors/hour (Southern) or 10-30 (Northern). Fast meteors at 66 km/s.',f:'Meteor Shower'},
+{m:6,d:20,t:'astro',i:'☀️',n:'Summer Solstice',x:'Sun at highest declination (+23.44°). Longest day in Northern Hemisphere with 16+ hours of sunlight.',f:'Seasonal'},
+{m:7,d:4,t:'astro',i:'☀️',n:'Earth at Aphelion',x:'Earth reaches farthest point from the Sun at ~152.1 million km — 3.3% farther than at perihelion.',f:'Orbital Mechanics'},
+{m:7,d:20,t:'astro',i:'🌙',n:'Moon Day — Apollo 11 Landing (1969)',x:'Neil Armstrong & Buzz Aldrin walked on the Moon. "That\'s one small step for man, one giant leap for mankind." 600 million watched.',f:'Space History'},
+{m:7,d:28,t:'astro',i:'☄️',n:'Delta Aquarids Meteor Shower Peak',x:'Moderate shower with ~20 meteors/hour. Best from southern latitudes after midnight.',f:'Meteor Shower'},
+{m:8,d:12,t:'astro',i:'🌠',n:'Perseids Meteor Shower Peak',x:'The most popular shower! 50-100+ bright meteors/hour from Comet Swift-Tuttle. Known for spectacular fireballs.',f:'Meteor Shower'},
+{m:8,d:25,t:'astro',i:'🌌',n:'Voyager 2 Neptune Flyby (1989)',x:'First and only spacecraft to visit Neptune. Discovered 6 new moons, rings, and the Great Dark Spot.',f:'Space History'},
+{m:9,d:22,t:'astro',i:'🍂',n:'Autumnal Equinox',x:'Sun crosses equator southward. Day ≈ night worldwide. Autumn begins in Northern Hemisphere.',f:'Seasonal'},
+{m:9,d:23,t:'astro',i:'🪐',n:'Discovery of Neptune (1846)',x:'Johann Galle found Neptune within 1° of the position predicted by Le Verrier\'s mathematics — a triumph of celestial mechanics.',f:'Discovery'},
+{m:10,d:4,t:'astro',i:'🛰️',n:'Sputnik Launch / World Space Week (1957)',x:'USSR launched the first artificial satellite. Its radio "beep-beep" launched the Space Age. UN-declared World Space Week: Oct 4-10.',f:'Space History'},
+{m:10,d:8,t:'astro',i:'☄️',n:'Draconids Meteor Shower Peak',x:'Unusual shower best viewed in early evening. 5-10 meteors/hour from Comet 21P/Giacobini-Zinner.',f:'Meteor Shower'},
+{m:10,d:21,t:'astro',i:'☄️',n:'Orionids Meteor Shower Peak',x:'From Halley\'s Comet debris. 15-20 fast meteors/hour at 66 km/s. Known for bright lingering trails.',f:'Meteor Shower'},
+{m:11,d:4,t:'astro',i:'☄️',n:'Taurids Meteor Shower Peak',x:'The "Halloween fireballs" — slow, long-duration shower from Comet Encke. Famous for spectacular bright fireballs.',f:'Meteor Shower'},
+{m:11,d:17,t:'astro',i:'🌠',n:'Leonids Meteor Shower Peak',x:'Famous for periodic meteor storms (~every 33 years). Normally 10-15/hour from Comet Tempel-Tuttle.',f:'Meteor Shower'},
+{m:12,d:13,t:'astro',i:'💫',n:'Geminids Meteor Shower Peak',x:'King of meteor showers! Up to 150 multicolored meteors/hour from asteroid 3200 Phaethon.',f:'Meteor Shower'},
+{m:12,d:21,t:'astro',i:'❄️',n:'Winter Solstice',x:'Sun at lowest declination. Shortest day and longest night in Northern Hemisphere.',f:'Seasonal'},
+{m:12,d:22,t:'astro',i:'☄️',n:'Ursids Meteor Shower Peak',x:'Minor shower: 5-10 meteors/hour from Comet 8P/Tuttle.',f:'Meteor Shower'},
+
+// ── LUNAR PHASES ──
+{m:1,d:10,t:'moon',i:'🌑',n:'New Moon (January)',x:'Moon between Earth and Sun. Best night for deep-sky observation.',f:'Lunar'},
+{m:1,d:25,t:'moon',i:'🌕',n:'Full Moon — Wolf Moon',x:'Named by Algonquin tribes for howling wolves in cold January nights. Also Old Moon or Ice Moon.',f:'Lunar'},
+{m:2,d:9,t:'moon',i:'🌑',n:'New Moon (February)',x:'Dark skies for winter deep-sky astrophotography. Orion Nebula and Pleiades perfectly positioned.',f:'Lunar'},
+{m:2,d:24,t:'moon',i:'🌕',n:'Full Moon — Snow Moon',x:'Named for heavy February snowfall. Also Hunger Moon or Storm Moon.',f:'Lunar'},
+{m:3,d:10,t:'moon',i:'🌑',n:'New Moon (March)',x:'Spring galaxy season begins — Leo, Virgo Cluster rising.',f:'Lunar'},
+{m:3,d:25,t:'moon',i:'🌕',n:'Full Moon — Worm Moon',x:'Named for earthworm casts appearing as ground thaws.',f:'Lunar'},
+{m:4,d:8,t:'moon',i:'🌑',n:'New Moon (April)',x:'Peak spring galaxy observing — Leo Triplet and Virgo Cluster overhead.',f:'Lunar'},
+{m:4,d:23,t:'moon',i:'🌕',n:'Full Moon — Pink Moon',x:'Named for pink phlox wildflowers in early spring.',f:'Lunar'},
+{m:5,d:8,t:'moon',i:'🌑',n:'New Moon (May)',x:'Milky Way core begins rising higher. Summer deep-sky season approaches.',f:'Lunar'},
+{m:5,d:23,t:'moon',i:'🌕',n:'Full Moon — Flower Moon',x:'Named for abundant May flowers. Also Corn Planting Moon.',f:'Lunar'},
+{m:6,d:6,t:'moon',i:'🌑',n:'New Moon (June)',x:'Best dark skies for the rising Milky Way galactic core.',f:'Lunar'},
+{m:6,d:22,t:'moon',i:'🌕',n:'Full Moon — Strawberry Moon',x:'Named for strawberry harvest season. Often appears amber near the horizon.',f:'Lunar'},
+{m:7,d:6,t:'moon',i:'🌑',n:'New Moon (July)',x:'Peak summer deep-sky: Lagoon, Eagle, and Trifid Nebulae.',f:'Lunar'},
+{m:7,d:21,t:'moon',i:'🌕',n:'Full Moon — Buck Moon',x:'Named for male deer growing new antlers. Also Thunder Moon.',f:'Lunar'},
+{m:8,d:4,t:'moon',i:'🌑',n:'New Moon (August)',x:'Perfect timing before the Perseids peak!',f:'Lunar'},
+{m:8,d:19,t:'moon',i:'🌕',n:'Full Moon — Sturgeon Moon',x:'Named for abundant sturgeon fish in Great Lakes.',f:'Lunar'},
+{m:9,d:3,t:'moon',i:'🌑',n:'New Moon (September)',x:'Andromeda Galaxy (M31) rising high.',f:'Lunar'},
+{m:9,d:17,t:'moon',i:'🌕',n:'Full Moon — Harvest Moon',x:'Closest full moon to equinox. Rises near sunset, providing extra light for harvesting.',f:'Lunar'},
+{m:10,d:2,t:'moon',i:'🌑',n:'New Moon (October)',x:'Dark autumn skies — Andromeda Galaxy and Perseus Double Cluster.',f:'Lunar'},
+{m:10,d:17,t:'moon',i:'🌕',n:'Full Moon — Hunter\'s Moon',x:'Time to hunt game for winter preparation.',f:'Lunar'},
+{m:11,d:1,t:'moon',i:'🌑',n:'New Moon (November)',x:'Winter constellations rising: Orion, Taurus, Gemini.',f:'Lunar'},
+{m:11,d:15,t:'moon',i:'🌕',n:'Full Moon — Beaver Moon',x:'Time to set beaver traps before waters froze. Also Frost Moon.',f:'Lunar'},
+{m:12,d:1,t:'moon',i:'🌑',n:'New Moon (December)',x:'Dark skies for Geminids. Winter Milky Way overhead.',f:'Lunar'},
+{m:12,d:15,t:'moon',i:'🌕',n:'Full Moon — Cold Moon',x:'Named for long, cold December nights. Also Long Night Moon.',f:'Lunar'},
+
+// ── ECLIPSES ──
+{m:3,d:14,t:'eclipse',i:'🌘',n:'Total Lunar Eclipse (2025)',x:'Visible from Americas, Europe, Africa. Moon turns deep red ("Blood Moon") as Earth\'s shadow covers it.',f:'Lunar Eclipse'},
+{m:3,d:29,t:'eclipse',i:'🌞',n:'Partial Solar Eclipse (2025)',x:'Visible from NW Africa, Europe, northern Russia. Up to 55% coverage.',f:'Solar Eclipse'},
+{m:9,d:7,t:'eclipse',i:'🌘',n:'Total Lunar Eclipse (2025)',x:'Visible from Europe, Africa, Asia, Australia. Blood Moon lasts up to 1h 22m.',f:'Lunar Eclipse'},
+{m:9,d:21,t:'eclipse',i:'🌞',n:'Partial Solar Eclipse (2025)',x:'Visible from South Pacific, New Zealand, Antarctica. Maximum ~75% coverage.',f:'Solar Eclipse'},
+{m:2,d:17,t:'eclipse',i:'🌞',n:'Annular Solar Eclipse (2026)',x:'Annular "ring of fire" visible from Antarctica.',f:'Solar Eclipse'},
+{m:8,d:12,t:'eclipse',i:'🌞',n:'Total Solar Eclipse (2026)',x:'Visible from Arctic, Greenland, Iceland, Spain. Totality up to 2m 18s.',f:'Solar Eclipse'},
+
+// ── INTERNATIONAL SCIENCE DAYS ──
+{m:2,d:11,t:'intl',i:'👩‍🔬',n:'Intl Day of Women & Girls in Science',x:'UN-declared day promoting equal access to science. Honors Curie, Noether, Meitner, Wu, and all women in STEM.',f:'UNESCO'},
+{m:2,d:28,t:'intl',i:'🔬',n:'National Science Day (India)',x:'Commemorates C.V. Raman\'s discovery of the Raman Effect (1928). Promotes scientific temper.',f:'India'},
+{m:3,d:14,t:'intl',i:'🥧',n:'Intl Day of Mathematics (Pi Day)',x:'UNESCO-proclaimed on 3.14. π connects geometry, quantum mechanics, and general relativity.',f:'UNESCO'},
+{m:4,d:22,t:'intl',i:'🌍',n:'Earth Day',x:'Annual environmental protection event. Founded 1970. 1 billion+ people in 193 countries.',f:'International'},
+{m:5,d:20,t:'intl',i:'📏',n:'World Metrology Day',x:'Commemorates the Metre Convention (1875). Science of measurement fundamental to physics.',f:'International'},
+{m:7,d:1,t:'intl',i:'☄️',n:'International Asteroid Day',x:'UN-sanctioned on the anniversary of the 1908 Tunguska event. Promotes asteroid awareness.',f:'UN'},
+{m:10,d:23,t:'intl',i:'🧪',n:'Mole Day',x:'Celebrated 6:02 AM to 6:02 PM on 10/23, for Avogadro\'s number (6.02×10²³). Chemistry\'s favorite holiday.',f:'Chemistry'},
+{m:11,d:7,t:'intl',i:'📡',n:'World Science Day for Peace & Development',x:'UNESCO celebration promoting public awareness of science\'s role in society.',f:'UNESCO'},
+{m:12,d:10,t:'intl',i:'🏅',n:'Nobel Prize Ceremony Day',x:'Prizes awarded annually on Alfred Nobel\'s death anniversary in Stockholm and Oslo. ~$1M per prize.',f:'Nobel'},
+
+// ── PHYSICIST & CHEMIST BIRTHDAYS ──
+{m:1,d:1,t:'birthday',i:'🎂',n:'Satyendra Nath Bose — Born 1894',x:'Indian physicist who developed Bose-Einstein statistics with Einstein. Bosons are named in his honor.',f:'Quantum Physics'},
+{m:1,d:2,t:'birthday',i:'🎂',n:'Rudolf Clausius — Born 1822',x:'Formulated the Second Law of Thermodynamics and coined the term "entropy."',f:'Thermodynamics'},
+{m:1,d:6,t:'birthday',i:'🎂',n:'Vera Rubin — Born 1928',x:'Provided strong evidence for dark matter by studying galaxy rotation curves.',f:'Astrophysics'},
+{m:1,d:8,t:'birthday',i:'🎂',n:'Stephen Hawking — Born 1942',x:'Hawking radiation, black hole theory, "A Brief History of Time." Defied ALS for 55 years. Lucasian Professor like Newton.',f:'Cosmology'},
+{m:1,d:12,t:'birthday',i:'🎂',n:'Svante Arrhenius — Born 1859',x:'Proposed ionic dissociation theory. Nobel Chemistry 1903. First to model greenhouse gas warming (1896).',f:'Physical Chemistry'},
+{m:1,d:15,t:'birthday',i:'🎂',n:'Edward Teller — Born 1908',x:'Hungarian-American physicist, "Father of the Hydrogen Bomb." Nuclear and molecular physics.',f:'Nuclear Physics'},
+{m:1,d:17,t:'birthday',i:'🎂',n:'Benjamin Franklin — Born 1706',x:'Proved lightning is electrical. Invented the lightning rod, bifocals, and Franklin stove.',f:'Electricity'},
+{m:1,d:19,t:'birthday',i:'🎂',n:'James Watt — Born 1736',x:'Improved the steam engine. The watt (W) power unit honors him. Made the Industrial Revolution possible.',f:'Thermodynamics'},
+{m:1,d:22,t:'birthday',i:'🎂',n:'André-Marie Ampère — Born 1775',x:'Founder of electrodynamics. Ampère\'s law relates magnetic fields to current. The ampere (A) unit.',f:'Electrodynamics'},
+{m:1,d:22,t:'birthday',i:'🎂',n:'Lev Landau — Born 1908',x:'Quantum mechanics, superfluidity, plasma physics, particle physics. Nobel 1962. Legendary textbooks.',f:'Theoretical Physics'},
+{m:1,d:25,t:'birthday',i:'🎂',n:'Robert Boyle — Born 1627',x:'First modern chemist. Boyle\'s Law: PV = constant. "The Sceptical Chymist" separated chemistry from alchemy.',f:'Chemistry'},
+{m:1,d:29,t:'birthday',i:'🎂',n:'Abdus Salam — Born 1926',x:'1979 Nobel for electroweak unification. First Muslim Nobel laureate in science.',f:'Particle Physics'},
+{m:2,d:4,t:'birthday',i:'🎂',n:'Clyde Tombaugh — Born 1906',x:'Discovered Pluto (1930) at age 24. His ashes are aboard the New Horizons spacecraft beyond Pluto.',f:'Astronomy'},
+{m:2,d:7,t:'birthday',i:'🎂',n:'G.N. Lewis — Born 1875',x:'Lewis dot structures, coined "photon," covalent bond concept, thermodynamics contributions.',f:'Physical Chemistry'},
+{m:2,d:8,t:'birthday',i:'🎂',n:'Dmitri Mendeleev — Born 1834',x:'Created the Periodic Table (1869). Predicted undiscovered elements. Element 101 = Mendelevium.',f:'Chemistry'},
+{m:2,d:11,t:'birthday',i:'🎂',n:'Josiah Willard Gibbs — Born 1839',x:'Founded chemical thermodynamics and statistical mechanics. Einstein called him the greatest American scientist.',f:'Thermodynamics'},
+{m:2,d:14,t:'birthday',i:'🎂',n:'Fritz Zwicky — Born 1898',x:'First proposed dark matter (1933). Also predicted neutron stars and gravitational lensing.',f:'Astrophysics'},
+{m:2,d:15,t:'birthday',i:'🎂',n:'Galileo Galilei — Born 1564',x:'"Father of Modern Science." Telescope, Jupiter\'s moons, heliocentrism, kinematics. Prosecuted by the Inquisition.',f:'Astronomy/Physics'},
+{m:2,d:17,t:'birthday',i:'🎂',n:'Otto Stern — Born 1888',x:'Nobel 1943 for molecular beam method. Stern-Gerlach experiment proved space quantization.',f:'Experimental Physics'},
+{m:2,d:20,t:'birthday',i:'🎂',n:'Ludwig Boltzmann — Born 1844',x:'Statistical mechanics and the Boltzmann equation. Epitaph: S = k log W. The Boltzmann constant k.',f:'Statistical Mechanics'},
+{m:2,d:22,t:'birthday',i:'🎂',n:'Heinrich Hertz — Born 1857',x:'Proved electromagnetic waves exist (1887), confirming Maxwell. The hertz (Hz) unit. Died at 36.',f:'Electromagnetism'},
+{m:2,d:28,t:'birthday',i:'🎂',n:'Linus Pauling — Born 1901',x:'Only person to win 2 unshared Nobels: Chemistry (1954) and Peace (1962). Founded molecular biology.',f:'Chemistry'},
+{m:3,d:14,t:'birthday',i:'🎂',n:'Albert Einstein — Born 1879',x:'Special & general relativity, E=mc², photoelectric effect (Nobel 1921), Brownian motion. Reshaped space, time, and gravity.',f:'Theoretical Physics'},
+{m:3,d:16,t:'birthday',i:'🎂',n:'Georg Ohm — Born 1789',x:'Ohm\'s Law: V = IR. The ohm (Ω) unit of resistance.',f:'Electricity'},
+{m:3,d:21,t:'birthday',i:'🎂',n:'Joseph Fourier — Born 1768',x:'Fourier analysis — decomposing functions into sine waves. Fundamental to signal processing and quantum mechanics.',f:'Mathematical Physics'},
+{m:3,d:23,t:'birthday',i:'🎂',n:'Emmy Noether — Born 1882',x:'Noether\'s theorem: every symmetry = a conservation law. Einstein called her a genius.',f:'Mathematical Physics'},
+{m:3,d:28,t:'birthday',i:'🎂',n:'Alexander Friedmann — Born 1888',x:'Derived Friedmann equations from GR showing the universe must be expanding — before Hubble confirmed it.',f:'Cosmology'},
+{m:3,d:31,t:'birthday',i:'🎂',n:'Robert Bunsen — Born 1811',x:'Bunsen burner, discovered cesium and rubidium, pioneered emission spectroscopy with Kirchhoff.',f:'Chemistry'},
+{m:4,d:15,t:'birthday',i:'🎂',n:'Leonhard Euler — Born 1707',x:'Euler\'s identity (e^iπ+1=0), fluid dynamics, optics, rigid body mechanics. Most prolific mathematician ever.',f:'Mathematical Physics'},
+{m:4,d:22,t:'birthday',i:'🎂',n:'J. Robert Oppenheimer — Born 1904',x:'"Father of the Atomic Bomb." Led the Manhattan Project. Quoted the Bhagavad Gita after Trinity test.',f:'Nuclear Physics'},
+{m:4,d:23,t:'birthday',i:'🎂',n:'Max Planck — Born 1858',x:'Originated quantum theory (1900). h = 6.626×10⁻³⁴ J·s. Nobel 1918.',f:'Quantum Physics'},
+{m:4,d:25,t:'birthday',i:'🎂',n:'Wolfgang Pauli — Born 1900',x:'Pauli Exclusion Principle. Predicted the neutrino (1930). Nobel 1945. Famous "Pauli effect."',f:'Quantum Mechanics'},
+{m:4,d:29,t:'birthday',i:'🎂',n:'Henri Poincaré — Born 1854',x:'Chaos theory, special relativity foundations, topology. "The last universal mathematician."',f:'Mathematical Physics'},
+{m:4,d:30,t:'birthday',i:'🎂',n:'Carl Friedrich Gauss — Born 1777',x:'"Prince of Mathematicians." Magnetism (gauss unit), number theory, statistics (Gaussian distribution).',f:'Mathematics/Physics'},
+{m:5,d:1,t:'birthday',i:'🎂',n:'Glenn Seaborg — Born 1912',x:'Discovered 10 transuranium elements. Nobel 1951. Element 106 = Seaborgium — named while alive!',f:'Nuclear Chemistry'},
+{m:5,d:7,t:'birthday',i:'🎂',n:'Pyotr Kapitsa — Born 1894',x:'Discovered superfluidity in helium-4. Nobel 1978. Low-temperature physics pioneer.',f:'Condensed Matter'},
+{m:5,d:11,t:'birthday',i:'🎂',n:'Richard Feynman — Born 1918',x:'Feynman diagrams, QED, path integrals, nanotechnology pioneer. Nobel 1965. "What I cannot create, I do not understand."',f:'Quantum Electrodynamics'},
+{m:5,d:12,t:'birthday',i:'🎂',n:'Dorothy Hodgkin — Born 1910',x:'X-ray crystallography. Structures of penicillin, vitamin B12, insulin. Nobel Chemistry 1964.',f:'Crystallography'},
+{m:5,d:16,t:'birthday',i:'🎂',n:'Maria Goeppert Mayer — Born 1906',x:'Nuclear shell model. Second woman to win Nobel in Physics (1963).',f:'Nuclear Physics'},
+{m:5,d:23,t:'birthday',i:'🎂',n:'John Bardeen — Born 1908',x:'Only person to win 2 Nobel Prizes in Physics: transistor (1956) and superconductivity (1972).',f:'Solid State Physics'},
+{m:5,d:24,t:'birthday',i:'🎂',n:'Daniel Gabriel Fahrenheit — Born 1686',x:'Invented the mercury thermometer and the Fahrenheit temperature scale.',f:'Thermometry'},
+{m:5,d:27,t:'birthday',i:'🎂',n:'Rachel Carson — Born 1907',x:'"Silent Spring" (1962) launched the environmental movement and the EPA.',f:'Environmental Chemistry'},
+{m:5,d:31,t:'birthday',i:'🎂',n:'Julius Robert von Mayer — Born 1814',x:'First formulated conservation of energy (1842). Calculated the mechanical equivalent of heat.',f:'Thermodynamics'},
+{m:6,d:5,t:'birthday',i:'🎂',n:'John Couch Adams — Born 1819',x:'Independently predicted Neptune\'s position through mathematics.',f:'Celestial Mechanics'},
+{m:6,d:8,t:'birthday',i:'🎂',n:'Francis Crick — Born 1916',x:'Co-discovered DNA\'s double helix with Watson, using Franklin\'s crystallography data. Nobel 1962.',f:'Biophysics'},
+{m:6,d:13,t:'birthday',i:'🎂',n:'James Clerk Maxwell — Born 1831',x:'Unified electricity, magnetism, optics in Maxwell\'s equations. Predicted EM waves. Statistical mechanics pioneer.',f:'Electrodynamics'},
+{m:6,d:19,t:'birthday',i:'🎂',n:'Blaise Pascal — Born 1623',x:'Pascal\'s law (pressure in fluids), Pascal\'s triangle, the Pascaline calculator. The pascal (Pa) unit.',f:'Fluid Mechanics'},
+{m:6,d:22,t:'birthday',i:'🎂',n:'Hermann Minkowski — Born 1864',x:'Developed spacetime geometry — mathematical framework for special relativity.',f:'Mathematical Physics'},
+{m:6,d:27,t:'birthday',i:'🎂',n:'Lord Kelvin — Born 1824',x:'Laws of Thermodynamics, absolute zero. Laid transatlantic telegraph cable. The kelvin (K) unit.',f:'Thermodynamics'},
+{m:6,d:28,t:'birthday',i:'🎂',n:'Henri Becquerel — Born 1852',x:'Discovered radioactivity (1896). Shared 1903 Nobel with the Curies. The becquerel (Bq) unit.',f:'Radioactivity'},
+{m:6,d:30,t:'birthday',i:'🎂',n:'Ahmed Zewail — Born 1946',x:'Founded femtochemistry — observing reactions at 10⁻¹⁵ seconds. Nobel Chemistry 1999.',f:'Femtochemistry'},
+{m:7,d:1,t:'birthday',i:'🎂',n:'Gottfried Wilhelm Leibniz — Born 1646',x:'Independently invented calculus, conceived kinetic energy, developed binary arithmetic.',f:'Mathematics/Physics'},
+{m:7,d:2,t:'birthday',i:'🎂',n:'Hans Bethe — Born 1906',x:'Discovered nuclear reactions powering stars (CNO cycle). Nobel 1967. Worked on the bomb and disarmament.',f:'Nuclear Physics'},
+{m:7,d:10,t:'birthday',i:'🎂',n:'Nikola Tesla — Born 1856',x:'AC power system, Tesla coil, radio technology. 300+ patents. The tesla (T) magnetic unit.',f:'Electrical Engineering'},
+{m:7,d:17,t:'birthday',i:'🎂',n:'Georges Lemaître — Born 1894',x:'Proposed the Big Bang theory (1927). Derived Hubble\'s law two years before Hubble.',f:'Cosmology'},
+{m:7,d:18,t:'birthday',i:'🎂',n:'Hendrik Lorentz — Born 1853',x:'Lorentz transformations, fundamental to special relativity. Nobel 1902. Mentor to Einstein.',f:'Theoretical Physics'},
+{m:7,d:22,t:'birthday',i:'🎂',n:'Friedrich Bessel — Born 1784',x:'First accurate stellar distance measurement (parallax). Bessel functions are fundamental in physics.',f:'Astronomy'},
+{m:7,d:25,t:'birthday',i:'🎂',n:'Rosalind Franklin — Born 1920',x:'Photo 51 was crucial for DNA\'s double helix discovery. Died at 37 of ovarian cancer.',f:'Crystallography'},
+{m:8,d:1,t:'birthday',i:'🎂',n:'Maria Mitchell — Born 1818',x:'First American woman astronomer. Discovered a comet (1847). Pioneered women in science.',f:'Astronomy'},
+{m:8,d:6,t:'birthday',i:'🎂',n:'Alexander Fleming — Born 1881',x:'Discovered penicillin (1928) — the first antibiotic. Nobel 1945. Revolutionized medicine.',f:'Biochemistry'},
+{m:8,d:8,t:'birthday',i:'🎂',n:'Paul Dirac — Born 1902',x:'Dirac equation predicted antimatter. Nobel 1933. "God used beautiful mathematics in creating the world."',f:'Quantum Mechanics'},
+{m:8,d:9,t:'birthday',i:'🎂',n:'Amedeo Avogadro — Born 1776',x:'Avogadro\'s law and the concept of molecules. Avogadro\'s number: 6.022 × 10²³.',f:'Chemistry'},
+{m:8,d:12,t:'birthday',i:'🎂',n:'Erwin Schrödinger — Born 1887',x:'Schrödinger equation: the fundamental equation of quantum mechanics. Schrödinger\'s cat. Nobel 1933.',f:'Quantum Mechanics'},
+{m:8,d:13,t:'birthday',i:'🎂',n:'Anders Ångström — Born 1814',x:'Founded spectroscopy. The Ångström unit (Å = 10⁻¹⁰ m) for atomic scales.',f:'Spectroscopy'},
+{m:8,d:15,t:'birthday',i:'🎂',n:'Louis de Broglie — Born 1892',x:'Wave-particle duality: λ = h/p. Every particle has a wavelength. Nobel 1929.',f:'Quantum Physics'},
+{m:8,d:20,t:'birthday',i:'🎂',n:'Paul Ehrlich — Born 1854',x:'Developed the "magic bullet" concept in pharmacology. Pioneer of chemotherapy. Nobel 1908.',f:'Medicinal Chemistry'},
+{m:8,d:26,t:'birthday',i:'🎂',n:'Antoine Lavoisier — Born 1743',x:'"Father of Modern Chemistry." Named oxygen & hydrogen. Conservation of mass. Guillotined in the Revolution.',f:'Chemistry'},
+{m:8,d:30,t:'birthday',i:'🎂',n:'Ernest Rutherford — Born 1871',x:'"Father of Nuclear Physics." Discovered the nucleus, proton. Nobel 1908. Element 104 = Rutherfordium.',f:'Nuclear Physics'},
+{m:8,d:31,t:'birthday',i:'🎂',n:'Hermann von Helmholtz — Born 1821',x:'Conservation of energy, Helmholtz free energy, ophthalmoscope, acoustics/optics.',f:'Thermodynamics'},
+{m:9,d:5,t:'birthday',i:'🎂',n:'John Dalton — Born 1766',x:'Modern atomic theory (1803). Law of multiple proportions. Studied color blindness (Daltonism).',f:'Chemistry'},
+{m:9,d:15,t:'birthday',i:'🎂',n:'Murray Gell-Mann — Born 1929',x:'Quark model, Eightfold Way. Named "quarks" from Joyce\'s Finnegans Wake. Nobel 1969.',f:'Particle Physics'},
+{m:9,d:17,t:'birthday',i:'🎂',n:'Bernhard Riemann — Born 1826',x:'Riemannian geometry became the language of general relativity. Riemann hypothesis: most famous unsolved problem.',f:'Mathematical Physics'},
+{m:9,d:18,t:'birthday',i:'🎂',n:'Léon Foucault — Born 1819',x:'Proved Earth\'s rotation with his pendulum (1851). Measured the speed of light. Invented the gyroscope.',f:'Experimental Physics'},
+{m:9,d:22,t:'birthday',i:'🎂',n:'Michael Faraday — Born 1791',x:'Electromagnetic induction, Faraday cage, diamagnetism, electrolysis laws. Self-taught genius. The farad (F) unit.',f:'Electromagnetism'},
+{m:9,d:25,t:'birthday',i:'🎂',n:'Jean-Baptiste Perrin — Born 1870',x:'Proved atoms exist by studying Brownian motion. Nobel 1926.',f:'Atomic Physics'},
+{m:9,d:29,t:'birthday',i:'🎂',n:'Enrico Fermi — Born 1901',x:'First nuclear reactor (1942). Beta decay theory, Fermi statistics, Fermi paradox. Nobel 1938. Element 100 = Fermium.',f:'Nuclear Physics'},
+{m:10,d:5,t:'birthday',i:'🎂',n:'Robert Goddard — Born 1882',x:'"Father of Modern Rocketry." First liquid-fueled rocket (1926). 214 patents. NASA\'s Goddard Center.',f:'Rocket Physics'},
+{m:10,d:7,t:'birthday',i:'🎂',n:'Niels Bohr — Born 1885',x:'Bohr atomic model, Copenhagen interpretation of QM. Nobel 1922. Element 107 = Bohrium.',f:'Atomic Physics'},
+{m:10,d:10,t:'birthday',i:'🎂',n:'Henry Cavendish — Born 1731',x:'Discovered hydrogen. Measured Earth\'s density. Determined gravitational constant G.',f:'Chemistry/Physics'},
+{m:10,d:15,t:'birthday',i:'🎂',n:'Evangelista Torricelli — Born 1608',x:'Invented the barometer (1643). Torricelli\'s theorem in fluid dynamics.',f:'Fluid Physics'},
+{m:10,d:19,t:'birthday',i:'🎂',n:'Subrahmanyan Chandrasekhar — Born 1910',x:'Chandrasekhar limit (1.4 M☉) for white dwarfs. Nobel 1983.',f:'Astrophysics'},
+{m:10,d:21,t:'birthday',i:'🎂',n:'Alfred Nobel — Born 1833',x:'Invented dynamite (1867). His fortune established the Nobel Prizes.',f:'Chemistry'},
+{m:10,d:25,t:'birthday',i:'🎂',n:'Henry Moseley — Born 1887',x:'Used X-rays to determine atomic numbers. Proved atomic number orders the Periodic Table. Killed at Gallipoli at 27.',f:'Atomic Physics'},
+{m:10,d:31,t:'birthday',i:'🎂',n:'Chien-Shiung Wu — Born 1912',x:'"First Lady of Physics." Disproved parity conservation (1957). Nobel oversight.',f:'Nuclear Physics'},
+{m:11,d:2,t:'birthday',i:'🎂',n:'George Boole — Born 1815',x:'Boolean algebra — the math of logic gates, fundamental to computing.',f:'Mathematical Logic'},
+{m:11,d:7,t:'birthday',i:'🎂',n:'Marie Curie — Born 1867',x:'Only person to win Nobels in TWO sciences: Physics (1903) and Chemistry (1911). Discovered polonium & radium.',f:'Radioactivity'},
+{m:11,d:7,t:'birthday',i:'🎂',n:'C.V. Raman — Born 1888',x:'Raman Effect — inelastic light scattering. Nobel 1930. National Science Day (India) celebrates his discovery.',f:'Optics'},
+{m:11,d:7,t:'birthday',i:'🎂',n:'Lise Meitner — Born 1878',x:'Co-discovered nuclear fission (1938). Nobel went to Hahn alone — greatest oversight in Nobel history. Element 109 = Meitnerium.',f:'Nuclear Physics'},
+{m:11,d:8,t:'birthday',i:'🎂',n:'Edmond Halley — Born 1656',x:'Predicted his comet\'s return. Funded Newton\'s Principia. First weather map and magnetic charts.',f:'Astronomy'},
+{m:11,d:9,t:'birthday',i:'🎂',n:'Hedy Lamarr — Born 1914',x:'Actress AND physicist. Co-invented frequency-hopping spread spectrum — basis of WiFi, Bluetooth, GPS.',f:'Communications'},
+{m:11,d:10,t:'birthday',i:'🎂',n:'Mikhail Lomonosov — Born 1711',x:'"Leonardo of Russia." Conservation of mass before Lavoisier. Discovered Venus\'s atmosphere.',f:'Chemistry/Physics'},
+{m:11,d:15,t:'birthday',i:'🎂',n:'William Herschel — Born 1738',x:'Discovered Uranus (1781) and infrared radiation (1800). Built largest telescopes of his era.',f:'Astronomy'},
+{m:11,d:24,t:'birthday',i:'🎂',n:'Hideki Yukawa — Born 1907',x:'Predicted mesons mediating the strong force. Nobel 1949 — first Japanese Nobel laureate.',f:'Nuclear Physics'},
+{m:11,d:27,t:'birthday',i:'🎂',n:'Anders Celsius — Born 1701',x:'Proposed the Celsius temperature scale (originally inverted).',f:'Thermometry'},
+{m:12,d:3,t:'birthday',i:'🎂',n:'Jagadish Chandra Bose — Born 1858',x:'Pioneered microwave optics. Demonstrated radio before Marconi. Invented crescograph.',f:'Microwave Physics'},
+{m:12,d:5,t:'birthday',i:'🎂',n:'Werner Heisenberg — Born 1901',x:'Uncertainty Principle: ΔxΔp ≥ ℏ/2. Matrix mechanics. Nobel 1932.',f:'Quantum Mechanics'},
+{m:12,d:7,t:'birthday',i:'🎂',n:'Marie-Anne Paulze Lavoisier — Born 1758',x:'Essential collaborator with husband Antoine. Illustrated experiments and translated scientific texts.',f:'Chemistry'},
+{m:12,d:9,t:'birthday',i:'🎂',n:'Fritz Haber — Born 1868',x:'Haber-Bosch process feeds ~4 billion people. Nobel 1918. Controversially directed chemical weapons in WWI.',f:'Chemistry'},
+{m:12,d:10,t:'birthday',i:'🎂',n:'Ada Lovelace — Born 1815',x:'Wrote the first computer program for Babbage\'s Analytical Engine.',f:'Computing/Mathematics'},
+{m:12,d:11,t:'birthday',i:'🎂',n:'Max Born — Born 1882',x:'Probabilistic interpretation of wave function (|ψ|²). Nobel 1954. Grandfather of Olivia Newton-John.',f:'Quantum Mechanics'},
+{m:12,d:18,t:'birthday',i:'🎂',n:'J.J. Thomson — Born 1856',x:'Discovered the electron (1897). Nobel 1906. His students won 8 Nobel Prizes!',f:'Atomic Physics'},
+{m:12,d:19,t:'birthday',i:'🎂',n:'Albert Michelson — Born 1852',x:'Measured speed of light. Michelson-Morley experiment disproved the aether. First American science Nobel (1907).',f:'Optics'},
+{m:12,d:22,t:'birthday',i:'🎂',n:'Srinivasa Ramanujan — Born 1887',x:'Indian mathematical genius. ~3,900 results in infinite series and number theory. Died at 32.',f:'Mathematical Physics'},
+{m:12,d:25,t:'birthday',i:'🎂',n:'Isaac Newton — Born 1642',x:'Laws of motion, universal gravitation, calculus, optics, Principia. Arguably the greatest scientist ever.',f:'Classical Physics'},
+{m:12,d:27,t:'birthday',i:'🎂',n:'Johannes Kepler — Born 1571',x:'Three laws of planetary motion. Foundation for Newton\'s gravitational theory.',f:'Celestial Mechanics'},
+{m:12,d:27,t:'birthday',i:'🎂',n:'Louis Pasteur — Born 1822',x:'Pasteurization, germ theory, vaccines for rabies and anthrax. Proved chirality. Saved millions.',f:'Chemistry/Microbiology'},
+{m:12,d:29,t:'birthday',i:'🎂',n:'Charles Goodyear — Born 1800',x:'Discovered vulcanization of rubber (1839). Critical chemistry breakthrough for modern industry.',f:'Polymer Chemistry'},
+{m:1,d:11,t:'birthday',i:'🎂',n:'Theodor Svedberg — Born 1884',x:'Nobel Chemistry 1926 for colloid chemistry and the ultracentrifuge.',f:'Chemistry'},
+{m:3,d:7,t:'birthday',i:'🎂',n:'John Herschel — Born 1792',x:'Polymath: astronomer, chemist, photographer. Named 7 moons of Saturn. Catalogued thousands of stars.',f:'Astronomy/Chemistry'},
+{m:4,d:5,t:'birthday',i:'🎂',n:'Joseph Lister — Born 1827',x:'Pioneered antiseptic surgery using carbolic acid. Applied chemistry to medicine.',f:'Chemistry/Medicine'},
+{m:4,d:7,t:'birthday',i:'🎂',n:'Gérard Mourou — Born 1944',x:'Co-invented Chirped Pulse Amplification. Nobel 2018 with Donna Strickland. Highest-intensity lasers.',f:'Laser Physics'},
+{m:4,d:14,t:'birthday',i:'🎂',n:'Christiaan Huygens — Born 1629',x:'Wave theory of light, discovered Saturn\'s rings and Titan, invented the pendulum clock.',f:'Wave Optics'},
+{m:4,d:26,t:'birthday',i:'🎂',n:'Charles Richter — Born 1900',x:'Developed the Richter scale for earthquake magnitude.',f:'Geophysics'},
+{m:5,d:6,t:'birthday',i:'🎂',n:'Max Perutz — Born 1914',x:'Determined hemoglobin structure via X-ray crystallography. Nobel Chemistry 1962.',f:'Biochemistry'},
+{m:6,d:17,t:'birthday',i:'🎂',n:'William Crookes — Born 1832',x:'Discovered thallium, invented the Crookes tube (precursor to X-ray tubes).',f:'Chemistry/Physics'},
+{m:7,d:12,t:'birthday',i:'🎂',n:'George Eastman — Born 1854',x:'Pioneered photographic film using chemistry. Founded Kodak.',f:'Chemistry/Optics'},
+{m:7,d:31,t:'birthday',i:'🎂',n:'Primo Levi — Born 1919',x:'"The Periodic Table" — connecting chemical elements to human experience. Survived Auschwitz.',f:'Chemistry'},
+{m:8,d:18,t:'birthday',i:'🎂',n:'Brook Taylor — Born 1685',x:'Taylor series expansion — one of the most useful tools in physics.',f:'Mathematical Physics'},
+{m:9,d:20,t:'birthday',i:'🎂',n:'James Dewar — Born 1842',x:'Invented the Dewar flask (thermos), first liquefied hydrogen.',f:'Cryogenics'},
+{m:10,d:12,t:'birthday',i:'🎂',n:'Hans von Euler-Chelpin — Born 1873',x:'Nobel Chemistry 1929 for fermentation enzymes.',f:'Biochemistry'},
+{m:10,d:14,t:'birthday',i:'🎂',n:'Har Gobind Khorana — Born 1922',x:'Decoded genetic code, synthesized first artificial gene. Nobel 1968.',f:'Biochemistry'},
+{m:11,d:14,t:'birthday',i:'🎂',n:'Frederick Banting — Born 1891',x:'Co-discovered insulin (1921). Nobel 1923. Saved millions of diabetics.',f:'Biochemistry'},
+{m:11,d:30,t:'birthday',i:'🎂',n:'Andrew Huxley — Born 1917',x:'Nobel for nerve impulse transmission — applying physics to biology.',f:'Biophysics'},
+{m:12,d:16,t:'birthday',i:'🎂',n:'Johann Wilhelm Ritter — Born 1776',x:'Discovered ultraviolet radiation (1801). Built first dry cell battery.',f:'Electrochemistry'},
+
+// ── MEMORIAL DAYS ──
+{m:1,d:4,t:'memorial',i:'🕯️',n:'Erwin Schrödinger — Died 1961',x:'Austrian physicist died in Vienna at 73. His wave equation remains the cornerstone of quantum mechanics.',f:'Quantum Mechanics'},
+{m:1,d:7,t:'memorial',i:'🕯️',n:'Nikola Tesla — Died 1943',x:'Died alone in Room 3327 of the New Yorker Hotel at age 86. His AC power system lights the modern world.',f:'Electrical Engineering'},
+{m:1,d:8,t:'memorial',i:'🕯️',n:'Galileo Galilei — Died 1642',x:'"Father of Modern Science" died under house arrest. Newton was born the same year.',f:'Physics/Astronomy'},
+{m:1,d:28,t:'memorial',i:'🕯️',n:'Challenger Disaster — 1986',x:'Shuttle broke apart 73 seconds after launch, killing 7 crew including teacher Christa McAuliffe.',f:'Space'},
+{m:2,d:1,t:'memorial',i:'🕯️',n:'Werner Heisenberg — Died 1976',x:'Pioneer of quantum mechanics died in Munich at 74. Uncertainty Principle.',f:'Quantum Mechanics'},
+{m:2,d:1,t:'memorial',i:'🕯️',n:'Columbia Disaster — 2003',x:'Shuttle disintegrated during re-entry, killing 7 crew. Foam insulation damage.',f:'Space'},
+{m:2,d:2,t:'memorial',i:'🕯️',n:'Dmitri Mendeleev — Died 1907',x:'Periodic Table creator died in Saint Petersburg at 72. Element 101 = Mendelevium.',f:'Chemistry'},
+{m:2,d:15,t:'memorial',i:'🕯️',n:'Richard Feynman — Died 1988',x:'Last words: "I\'d hate to die twice. It\'s so boring." Cancer. Age 69.',f:'Theoretical Physics'},
+{m:2,d:18,t:'memorial',i:'🕯️',n:'J. Robert Oppenheimer — Died 1967',x:'Died of throat cancer at 62. Security clearance revoked in 1954.',f:'Nuclear Physics'},
+{m:3,d:14,t:'memorial',i:'🕯️',n:'Stephen Hawking — Died 2018',x:'Died on Pi Day — Einstein\'s birthday. Ashes in Westminster Abbey near Newton.',f:'Cosmology'},
+{m:3,d:31,t:'memorial',i:'🕯️',n:'Isaac Newton — Died 1727',x:'Died in London at 84. Buried in Westminster Abbey. "Standing on shoulders of giants."',f:'Classical Physics'},
+{m:4,d:16,t:'memorial',i:'🕯️',n:'Rosalind Franklin — Died 1958',x:'Died of ovarian cancer at 37. Photo 51 essential for DNA discovery. Never received the Nobel.',f:'Crystallography'},
+{m:4,d:18,t:'memorial',i:'🕯️',n:'Albert Einstein — Died 1955',x:'Died in Princeton at 76. "I want to go when I want. I have done my share."',f:'Theoretical Physics'},
+{m:4,d:19,t:'memorial',i:'🕯️',n:'Pierre Curie — Died 1906',x:'Killed by a horse-drawn cart in Paris at 46.',f:'Radioactivity'},
+{m:4,d:30,t:'memorial',i:'🕯️',n:'Carl Friedrich Gauss — Died 1855',x:'"Prince of Mathematicians" died at 77. Contributions to all areas of math and physics.',f:'Mathematics/Physics'},
+{m:5,d:8,t:'memorial',i:'🕯️',n:'Antoine Lavoisier — Executed 1794',x:'Guillotined during the Terror. "A hundred years might not produce another like it."',f:'Chemistry'},
+{m:5,d:19,t:'memorial',i:'🕯️',n:'Thomas Young — Died 1829',x:'Double-slit experiment proved wave nature of light. Also deciphered hieroglyphics.',f:'Wave Optics'},
+{m:6,d:1,t:'memorial',i:'🕯️',n:'Sadi Carnot — Died 1832',x:'Founder of thermodynamics died of cholera at 36. Carnot cycle defines maximum engine efficiency.',f:'Thermodynamics'},
+{m:7,d:4,t:'memorial',i:'🕯️',n:'Marie Curie — Died 1934',x:'Died of aplastic anemia from radiation at 66. Her notebooks are still radioactive.',f:'Radioactivity'},
+{m:7,d:18,t:'memorial',i:'🕯️',n:'Robert Hooke — Died 1703',x:'Hooke\'s law (F=-kx), coined "cell," built microscopes. Bitter rival of Newton.',f:'Mechanics'},
+{m:7,d:27,t:'memorial',i:'🕯️',n:'John Dalton — Died 1844',x:'Father of atomic theory died at 77. 40,000 people viewed his coffin.',f:'Chemistry'},
+{m:8,d:25,t:'memorial',i:'🕯️',n:'Michael Faraday — Died 1867',x:'Self-taught genius died at 75. Declined knighthood. Electromagnetic induction powers civilization.',f:'Electromagnetism'},
+{m:9,d:5,t:'memorial',i:'🕯️',n:'Ludwig Boltzmann — Died 1906',x:'Died by suicide at 62. Epitaph: S = k log W. Ideas vindicated by Einstein shortly after.',f:'Statistical Mechanics'},
+{m:10,d:4,t:'memorial',i:'🕯️',n:'Max Planck — Died 1947',x:'Quantum theory originator died at 89. Endured tremendous personal tragedy.',f:'Quantum Physics'},
+{m:10,d:19,t:'memorial',i:'🕯️',n:'Ernest Rutherford — Died 1937',x:'"Father of Nuclear Physics" died at 66. Element 104 = Rutherfordium.',f:'Nuclear Physics'},
+{m:10,d:20,t:'memorial',i:'🕯️',n:'Paul Dirac — Died 1984',x:'Died at 82. His equation predicted antimatter. Westminster Abbey memorial near Newton.',f:'Quantum Mechanics'},
+{m:10,d:27,t:'memorial',i:'🕯️',n:'Lise Meitner — Died 1968',x:'Gravestone: "A physicist who never lost her humanity." Element 109 = Meitnerium.',f:'Nuclear Physics'},
+{m:11,d:5,t:'memorial',i:'🕯️',n:'James Clerk Maxwell — Died 1879',x:'Great unifier of electromagnetism died of cancer at just 48.',f:'Electrodynamics'},
+{m:11,d:18,t:'memorial',i:'🕯️',n:'Niels Bohr — Died 1962',x:'Atomic structure pioneer died at 77. Element 107 = Bohrium.',f:'Atomic Physics'},
+{m:11,d:21,t:'memorial',i:'🕯️',n:'C.V. Raman — Died 1970',x:'Nobel laureate died at 82. Raman Effect enables spectroscopy worldwide.',f:'Optics'},
+{m:11,d:28,t:'memorial',i:'🕯️',n:'Enrico Fermi — Died 1954',x:'Died of stomach cancer at 53. Element 100 = Fermium.',f:'Nuclear Physics'},
+{m:12,d:10,t:'memorial',i:'🕯️',n:'Alfred Nobel — Died 1896',x:'Died at 63. His will established the Nobel Prizes "for the greatest benefit to humankind."',f:'Chemistry'},
+{m:12,d:15,t:'memorial',i:'🕯️',n:'Wolfgang Pauli — Died 1958',x:'Died in room 137 — close to inverse of the fine-structure constant that obsessed him.',f:'Quantum Physics'},
+{m:12,d:20,t:'memorial',i:'🕯️',n:'Srinivasa Ramanujan — Died 1920',x:'Indian genius died at 32. His identities continue yielding results in string theory and black holes.',f:'Mathematical Physics'},
+
+// ── ACHIEVEMENTS ──
+{m:1,d:17,t:'achievement',i:'🏆',n:'Discovery of Radioactivity — Becquerel (1896)',x:'Uranium salts fogged photographic plates without sunlight — spontaneous radioactivity discovered.',f:'Nuclear Physics'},
+{m:1,d:31,t:'achievement',i:'🏆',n:'Explorer 1 — First US Satellite (1958)',x:'Discovered Van Allen radiation belts. Launched the US into the Space Race.',f:'Space'},
+{m:2,d:11,t:'achievement',i:'🏆',n:'Gravitational Waves Detected — LIGO (2016)',x:'Two merging black holes 1.3 billion light-years away confirmed Einstein\'s 1915 prediction.',f:'General Relativity'},
+{m:2,d:28,t:'achievement',i:'🏆',n:'Neutron Discovered — Chadwick (1932)',x:'Completed atomic structure picture. Enabled nuclear fission. Nobel 1935.',f:'Nuclear Physics'},
+{m:3,d:6,t:'achievement',i:'🏆',n:'Periodic Table Presented — Mendeleev (1869)',x:'63 elements organized by atomic weight. Predicted undiscovered elements with stunning accuracy.',f:'Chemistry'},
+{m:3,d:16,t:'achievement',i:'🏆',n:'First Liquid-Fueled Rocket — Goddard (1926)',x:'2.5 seconds of flight, 41 feet altitude in Auburn, Massachusetts. Began the space age.',f:'Rocket Physics'},
+{m:3,d:18,t:'achievement',i:'🏆',n:'Superconductivity Discovered — Onnes (1911)',x:'Mercury\'s resistance vanished at 4.2 K. Nobel 1913.',f:'Condensed Matter'},
+{m:3,d:24,t:'achievement',i:'🏆',n:'Haber-Bosch Process Patented (1908)',x:'Ammonia synthesis from N₂ + H₂. Now feeds ~4 billion people.',f:'Chemistry'},
+{m:4,d:2,t:'achievement',i:'🏆',n:'First Artificial Element: Technetium (1937)',x:'Perrier and Segrè filled element 43\'s gap in the Periodic Table.',f:'Nuclear Chemistry'},
+{m:4,d:12,t:'achievement',i:'🏆',n:'First Human in Space — Gagarin (1961)',x:'Orbited Earth in 108 minutes in Vostok 1.',f:'Space'},
+{m:4,d:14,t:'achievement',i:'🏆',n:'Bohr Model of the Atom (1913)',x:'Quantized electron orbits explained the hydrogen spectrum perfectly.',f:'Atomic Physics'},
+{m:4,d:25,t:'achievement',i:'🏆',n:'DNA Double Helix Published (1953)',x:'Watson & Crick in Nature, using Franklin\'s data. One of the greatest discoveries ever.',f:'Biophysics'},
+{m:5,d:5,t:'achievement',i:'🏆',n:'First American in Space — Shepard (1961)',x:'15-minute suborbital flight aboard Freedom 7.',f:'Space'},
+{m:5,d:15,t:'achievement',i:'🏆',n:'First Laser Operated — Maiman (1960)',x:'Synthetic ruby laser at Hughes Research Labs.',f:'Optics'},
+{m:5,d:29,t:'achievement',i:'🏆',n:'General Relativity Confirmed — Eddington (1919)',x:'Solar eclipse proved gravity bends light. Made Einstein world-famous overnight.',f:'General Relativity'},
+{m:6,d:4,t:'achievement',i:'🏆',n:'Raman Effect Discovery (1928)',x:'Inelastic light scattering demonstrated in Kolkata. Nobel 1930.',f:'Optics'},
+{m:6,d:10,t:'achievement',i:'🏆',n:'Millikan Oil Drop Experiment (1910)',x:'Measured electron charge: e = 1.602×10⁻¹⁹ C. Nobel 1923.',f:'Experimental Physics'},
+{m:6,d:15,t:'achievement',i:'🏆',n:'Franklin\'s Kite Experiment (1752)',x:'Proved lightning is electrical. Led to the lightning rod.',f:'Electricity'},
+{m:6,d:16,t:'achievement',i:'🏆',n:'First Woman in Space — Tereshkova (1963)',x:'Orbited Earth 48 times in Vostok 6.',f:'Space'},
+{m:6,d:26,t:'achievement',i:'🏆',n:'Carnot\'s Thermodynamics Founded (1824)',x:'"Reflections on the Motive Power of Fire" — founding thermodynamics.',f:'Thermodynamics'},
+{m:6,d:30,t:'achievement',i:'🏆',n:'Einstein\'s Special Relativity (1905)',x:'"On the Electrodynamics of Moving Bodies" — E=mc². Annus Mirabilis.',f:'Relativity'},
+{m:7,d:5,t:'achievement',i:'🏆',n:'Newton\'s Principia Published (1687)',x:'Most important scientific book ever. Three laws of motion and universal gravitation.',f:'Classical Physics'},
+{m:7,d:16,t:'achievement',i:'🏆',n:'Trinity Nuclear Test (1945)',x:'First nuclear detonation. 25 kilotons. "Now I am become Death."',f:'Nuclear Physics'},
+{m:7,d:20,t:'achievement',i:'🏆',n:'First Moon Landing — Apollo 11 (1969)',x:'Armstrong & Aldrin on the Moon. Collins orbited above. 600 million watched.',f:'Space'},
+{m:8,d:6,t:'achievement',i:'🏆',n:'Higgs Boson Confirmed — CERN (2012)',x:'Discovery at the LHC confirmed the mass-giving mechanism. Higgs & Englert Nobel 2013.',f:'Particle Physics'},
+{m:8,d:17,t:'achievement',i:'🏆',n:'First Exoplanet Discovered (1992)',x:'Wolszczan found planets orbiting pulsar PSR B1257+12.',f:'Astrophysics'},
+{m:9,d:2,t:'achievement',i:'🏆',n:'Antiproton Discovered (1955)',x:'Chamberlain and Segrè at Berkeley\'s Bevatron. Nobel 1959.',f:'Particle Physics'},
+{m:9,d:10,t:'achievement',i:'🏆',n:'LHC First Beam — CERN (2008)',x:'World\'s largest particle accelerator. 27 km ring. 13.6 TeV.',f:'Particle Physics'},
+{m:9,d:12,t:'achievement',i:'🏆',n:'JFK Moon Speech (1962)',x:'"We choose to go to the Moon in this decade!" at Rice University.',f:'Space'},
+{m:10,d:1,t:'achievement',i:'🏆',n:'CERN Founded (1954)',x:'European nuclear research org. Home to LHC, Higgs discovery, and the World Wide Web.',f:'Particle Physics'},
+{m:10,d:4,t:'achievement',i:'🏆',n:'Sputnik 1 Launched (1957)',x:'First artificial satellite. 83.6 kg. Space Age began.',f:'Space'},
+{m:11,d:3,t:'achievement',i:'🏆',n:'Sputnik 2 — Laika in Space (1957)',x:'First animal to orbit Earth.',f:'Space'},
+{m:11,d:8,t:'achievement',i:'🏆',n:'X-Rays Discovered — Röntgen (1895)',x:'First Nobel Prize in Physics (1901). His wife\'s hand X-ray became iconic.',f:'Physics'},
+{m:11,d:13,t:'achievement',i:'🏆',n:'Mariner 9 Orbits Mars (1971)',x:'First spacecraft to orbit another planet. Mapped 85% of Mars.',f:'Space'},
+{m:11,d:21,t:'achievement',i:'🏆',n:'General Relativity Presented (1915)',x:'Einstein\'s field equations. Gravity = curvature of spacetime.',f:'General Relativity'},
+{m:12,d:2,t:'achievement',i:'🏆',n:'Chicago Pile-1 — First Nuclear Reactor (1942)',x:'Fermi\'s team achieved first chain reaction. "The Italian navigator has landed."',f:'Nuclear Physics'},
+{m:12,d:10,t:'achievement',i:'🏆',n:'Nobel Prize Ceremony Day',x:'Awarded annually on Alfred Nobel\'s death anniversary.',f:'Nobel'},
+{m:12,d:14,t:'achievement',i:'🏆',n:'Planck\'s Quantum Hypothesis (1900)',x:'E=hν — energy comes in quanta. Birth of quantum physics.',f:'Quantum Physics'},
+{m:12,d:17,t:'achievement',i:'🏆',n:'Wright Brothers\' First Flight (1903)',x:'First powered flight. 12 seconds, 120 feet at Kitty Hawk.',f:'Aerodynamics'},
+{m:12,d:20,t:'achievement',i:'🏆',n:'Radium Isolated — The Curies (1898)',x:'Isolated radium from pitchblende. Led to Marie\'s second Nobel.',f:'Radioactivity'},
+{m:12,d:24,t:'achievement',i:'🏆',n:'Apollo 8 Orbits the Moon (1968)',x:'First crewed orbit of the Moon. "Earthrise" photo became iconic.',f:'Space'},
+];
+
+// ═══════════════════════════════════════════════════
+// TYPES
+// ═══════════════════════════════════════════════════
+const T={
+    astro:{l:'Astronomical',c:'#4f46e5',bg:'#eef2ff',fg:'#4338ca',e:'🌌'},
+    birthday:{l:'Birthday',c:'#d97706',bg:'#fef9ee',fg:'#b45309',e:'🎂'},
+    memorial:{l:'Memorial',c:'#dc2626',bg:'#fef2f2',fg:'#b91c1c',e:'🕯️'},
+    achievement:{l:'Achievement',c:'#059669',bg:'#ecfdf5',fg:'#047857',e:'🏆'},
+    moon:{l:'Lunar Phase',c:'#7c3aed',bg:'#f5f3ff',fg:'#6d28d9',e:'🌙'},
+    eclipse:{l:'Eclipse',c:'#ea580c',bg:'#fff7ed',fg:'#c2410c',e:'🌒'},
+    intl:{l:'Science Day',c:'#0284c7',bg:'#f0f9ff',fg:'#0369a1',e:'📡'},
+};
+const MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MA=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+let cY=new Date().getFullYear(), cM=new Date().getMonth(), sel=null;
+let flt=new Set(Object.keys(T)), q='';
+
+// ═══════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════
+const dim=(y,m)=>new Date(y,m+1,0).getDate();
+const fd=(y,m)=>new Date(y,m,1).getDay();
+
+function getEv(m,d){
+    return E.filter(e=>{
+        if(d!==undefined?(e.m!==m+1||e.d!==d):e.m!==m+1) return false;
+        if(!flt.has(e.t)) return false;
+        if(q){let s=q.toLowerCase();return e.n.toLowerCase().includes(s)||e.x.toLowerCase().includes(s)||(e.f&&e.f.toLowerCase().includes(s));}
+        return true;
+    }).sort((a,b)=>a.d-b.d);
+}
+
+// ═══════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════
+
+
+function renderStats(){
+    const cnt={};
+    Object.keys(T).forEach(k=>cnt[k]=getEv(cM).filter(e=>e.t===k).length);
+    document.getElementById('statsPills').innerHTML=Object.entries(T).filter(([k])=>cnt[k]>0).map(([k,v])=>
+        `<div class="stat-pill"><div class="sp-dot" style="background:${v.c}"></div>${cnt[k]} ${v.l}</div>`
+    ).join('');
+}
+
+function renderCal(){
+    const g=document.getElementById('calGrid');
+    g.innerHTML='';
+    document.getElementById('monthLabel').textContent=`${MN[cM]} ${cY}`;
+
+    const days=dim(cY,cM), f=fd(cY,cM), prev=dim(cY,cM-1);
+    const now=new Date();
+    const isToday=d=>now.getFullYear()===cY&&now.getMonth()===cM&&now.getDate()===d;
+
+    // Calculate total rows needed
+    const totalCells = f + days;
+    const rows = Math.ceil(totalCells / 7);
+
+    // Previous month
+    for(let i=f-1;i>=0;i--){
+        const c=document.createElement('div');
+        c.className='cal-cell other';
+        c.innerHTML=`<div class="cell-day">${prev-i}</div>`;
+        g.appendChild(c);
+    }
+
+    // Current month
+    for(let d=1;d<=days;d++){
+        const c=document.createElement('div');
+        c.className='cal-cell';
+        if(isToday(d)) c.classList.add('today');
+        if(sel===d) c.classList.add('selected');
+
+        const evs=getEv(cM,d);
+        const maxShow = rows <= 5 ? 3 : 2;
+        let ehtml=evs.slice(0,maxShow).map(e=>`<div class="cell-ev c-${e.t}">${e.i} ${e.n.substring(0,28)}${e.n.length>28?'…':''}</div>`).join('');
+        if(evs.length>maxShow) ehtml+=`<div class="cell-more">+${evs.length-maxShow} more</div>`;
+
+        c.innerHTML=`<div class="cell-day">${d}</div><div class="cell-events">${ehtml}</div>`;
+        c.addEventListener('click',()=>selDay(d));
+        g.appendChild(c);
+    }
+
+    // Next month
+    const rem=rows*7 - g.children.length;
+    for(let i=1;i<=rem;i++){
+        const c=document.createElement('div');
+        c.className='cal-cell other';
+        c.innerHTML=`<div class="cell-day">${i}</div>`;
+        g.appendChild(c);
+    }
+
+    // Set grid rows
+    g.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+}
+
+function renderList(){
+    const list=document.getElementById('evList');
+    const evs=sel!==null?getEv(cM,sel):getEv(cM);
+
+    document.getElementById('evCount').textContent=evs.length;
+    document.getElementById('evListTitle').textContent=sel!==null?`${MN[cM]} ${sel}`:'All Events';
+
+    if(!evs.length){
+        list.innerHTML=`<div class="ev-empty"><span>📭</span>No events found</div>`;
+        return;
+    }
+
+    list.innerHTML=evs.map((e,i)=>{
+        const idx=E.indexOf(e);
+        return `<div class="ev-card t-${e.t}" onclick="openM(${idx})">
+            <div class="ev-date">${MA[e.m-1]} ${e.d} · ${T[e.t].l}${e.f?' · '+e.f:''}</div>
+            <div class="ev-title">${e.i} ${e.n}</div>
+            <div class="ev-desc">${e.x.substring(0,80)}${e.x.length>80?'…':''}</div>
+        </div>`;
+    }).join('');
+}
+
+function render(){renderCal();renderList();renderStats();}
+
+// ═══════════════════════════════════════════════════
+// INTERACTIONS
+// ═══════════════════════════════════════════════════
+function selDay(d){sel=sel===d?null:d;render();}
+function togFlt(f){flt.has(f)?flt.delete(f):flt.add(f);render();}
+function changeMonth(d){cM+=d;if(cM<0){cM=11;cY--}if(cM>11){cM=0;cY++}sel=null;render();}
+function goToday(){cY=new Date().getFullYear();cM=new Date().getMonth();sel=new Date().getDate();render();}
+
+function openM(idx){
+    const e=E[idx];
+    document.getElementById('mIcon').textContent=e.i;
+    document.getElementById('mTitle').textContent=e.n;
+    document.getElementById('mType').innerHTML=`<span style="color:${T[e.t].c}">${T[e.t].e} ${T[e.t].l} — ${MN[e.m-1]} ${e.d}</span>`;
+    let body=`<p>${e.x}</p>`;
+    if(e.f) body+=`<div class="modal-field"><strong>Field:</strong> ${e.f}</div>`;
+    document.getElementById('mBody').innerHTML=body;
+    document.getElementById('mOverlay').classList.add('on');
+}
+
+function closeModal(){document.getElementById('mOverlay').classList.remove('on');}
+
+function clearSearch(){
+    document.getElementById('searchInput').value='';q='';
+    document.getElementById('clearBtn').classList.remove('show');
+    render();
+}
+
+// ═══════════════════════════════════════════════════
+// EVENTS
+// ═══════════════════════════════════════════════════
+document.getElementById('searchInput').addEventListener('input',ev=>{
+    q=ev.target.value;
+    document.getElementById('clearBtn').classList.toggle('show',q.length>0);
+    render();
+});
+
+document.addEventListener('keydown',ev=>{
+    if(ev.target.tagName==='INPUT') return;
+    if(ev.key==='ArrowLeft') changeMonth(-1);
+    if(ev.key==='ArrowRight') changeMonth(1);
+    if(ev.key.toLowerCase()==='t') goToday();
+    if(ev.key==='Escape') closeModal();
+});
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+
+render();
+</script>
+</body>
+</html>

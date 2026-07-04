@@ -619,16 +619,180 @@
         .modal-field strong { color:#3d3d56; font-weight:600; }
 
         /* ── RESPONSIVE ── */
-        @media (max-width:1024px) {
-            .sidebar { display:none; }
+
+        /* Mobile menu toggle button */
+        .mobile-menu-btn {
+            display:none;
+            width:36px;
+            height:36px;
+            border:1px solid #e0e1e5;
+            border-radius:8px;
+            background:#fff;
+            color:#4a4a5a;
+            cursor:pointer;
+            align-items:center;
+            justify-content:center;
+            font-size:20px;
+            font-family:'Material Symbols Rounded';
+            flex-shrink:0;
+            transition:.15s;
+        }
+        .mobile-menu-btn:hover { background:#f4f5f7; }
+
+        /* Sidebar overlay for mobile */
+        .sidebar-overlay {
+            display:none;
+            position:fixed;
+            inset:0;
+            background:rgba(0,0,0,.4);
+            z-index:998;
+            opacity:0;
+            transition:opacity .3s;
+        }
+        .sidebar-overlay.show {
+            opacity:1;
         }
 
-        @media (max-width:768px) {
+        /* Tablet */
+        @media (max-width:1024px) {
+            .sidebar { display:none; }
+            .mobile-menu-btn { display:flex; }
+            .sidebar.mobile-open {
+                display:flex;
+                position:fixed;
+                left:0; top:0; bottom:0;
+                z-index:999;
+                width:320px;
+                box-shadow:4px 0 24px rgba(0,0,0,.15);
+                animation:slideIn .25s ease;
+            }
+            .sidebar-overlay.show { display:block; }
             .stats-pills { display:none; }
-            .month-label { font-size:1rem; min-width:auto; }
-            .cell-events { display:none; }
-            .cell-day { font-size:.72rem; }
-            .topbar { padding:10px 16px; }
+        }
+
+        @keyframes slideIn {
+            from { transform:translateX(-100%); }
+            to { transform:translateX(0); }
+        }
+
+        /* Mobile phones */
+        @media (max-width:768px) {
+            .app {
+                flex-direction:column;
+                height:100vh;
+                height:100dvh;
+            }
+
+            .main { overflow:auto; }
+
+            /* Topbar compact */
+            .topbar {
+                padding:10px 12px;
+                gap:8px;
+                flex-wrap:nowrap;
+                position:sticky;
+                top:0;
+                background:#fff;
+                z-index:10;
+            }
+
+            .nav-btn {
+                width:32px; height:32px;
+                min-width:32px;
+                font-size:16px;
+                border-radius:6px;
+            }
+
+            .month-label {
+                font-size:.95rem;
+                min-width:auto;
+                flex:1;
+                letter-spacing:-.3px;
+            }
+
+            .today-btn {
+                padding:6px 10px;
+                font-size:.72rem;
+                border-radius:6px;
+            }
+
+            .stats-pills { display:none; }
+
+            /* Weekday headers */
+            .weekdays div {
+                padding:8px 0;
+                font-size:.6rem;
+                letter-spacing:.5px;
+            }
+
+            /* Calendar grid — compact cells */
+            .cal-cell {
+                padding:4px 3px;
+                min-height:52px;
+            }
+
+            .cell-day {
+                font-size:.72rem;
+                width:24px; height:24px;
+                margin-bottom:2px;
+            }
+
+            .cal-cell.today .cell-day {
+                width:24px; height:24px;
+            }
+
+            /* Show small dots instead of text for events */
+            .cell-events {
+                display:flex !important;
+                flex-direction:row;
+                flex-wrap:wrap;
+                gap:2px;
+            }
+
+            .cell-ev {
+                font-size:0;
+                width:6px; height:6px;
+                border-radius:50%;
+                padding:0;
+                min-width:6px;
+                min-height:6px;
+            }
+
+            .cell-more { display:none; }
+
+            /* Sidebar mobile full width */
+            .sidebar.mobile-open {
+                width:85vw;
+                max-width:320px;
+            }
+
+            /* Modal full screen on mobile */
+            .modal-box {
+                width:95vw;
+                max-width:95vw;
+                max-height:85vh;
+                border-radius:16px;
+            }
+
+            .modal-top { padding:16px; }
+            .modal-body { padding:16px; }
+            .modal-body p { font-size:.82rem; }
+
+            /* College brand compact */
+            .college-logo { width:56px; height:56px; }
+            .college-name { font-size:.8rem; }
+        }
+
+        /* Very small phones */
+        @media (max-width:380px) {
+            .topbar { padding:8px 8px; gap:6px; }
+            .month-label { font-size:.85rem; }
+            .today-btn { padding:5px 8px; font-size:.68rem; }
+            .cal-cell { padding:3px 2px; min-height:46px; }
+            .cell-day { font-size:.65rem; width:20px; height:20px; }
+            .cal-cell.today .cell-day { width:20px; height:20px; }
+            .cell-ev { width:5px; height:5px; }
+            .weekdays div { font-size:.55rem; padding:6px 0; }
         }
 
         /* ── SCROLLBAR GLOBAL ── */
@@ -639,6 +803,9 @@
 </head>
 <body>
 <div class="app">
+    <!-- ── SIDEBAR OVERLAY (mobile) ── -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeMobileSidebar()"></div>
+
     <!-- ── SIDEBAR ── -->
     <aside class="sidebar">
         <div class="sidebar-header">
@@ -667,6 +834,7 @@
     <!-- ── MAIN ── -->
     <main class="main">
         <div class="topbar">
+            <button class="mobile-menu-btn" onclick="toggleMobileSidebar()">menu</button>
             <button class="nav-btn" onclick="changeMonth(-1)">chevron_left</button>
             <button class="nav-btn" onclick="changeMonth(1)">chevron_right</button>
             <div class="month-label" id="monthLabel"></div>
@@ -1108,6 +1276,18 @@ function render(){renderCal();renderList();renderStats();}
 // ═══════════════════════════════════════════════════
 // INTERACTIONS
 // ═══════════════════════════════════════════════════
+function toggleMobileSidebar(){
+    const sb=document.querySelector('.sidebar');
+    const ov=document.getElementById('sidebarOverlay');
+    sb.classList.toggle('mobile-open');
+    ov.classList.toggle('show');
+    document.body.style.overflow=sb.classList.contains('mobile-open')?'hidden':'';
+}
+function closeMobileSidebar(){
+    document.querySelector('.sidebar').classList.remove('mobile-open');
+    document.getElementById('sidebarOverlay').classList.remove('show');
+    document.body.style.overflow='';
+}
 function selDay(d){sel=sel===d?null:d;render();}
 function togFlt(f){flt.has(f)?flt.delete(f):flt.add(f);render();}
 function changeMonth(d){cM+=d;if(cM<0){cM=11;cY--}if(cM>11){cM=0;cY++}sel=null;render();}

@@ -725,16 +725,28 @@
                 letter-spacing:.5px;
             }
 
-            /* Calendar grid — compact cells */
+            /* Calendar grid — allow scroll, no clipping */
+            .calendar-wrap {
+                overflow:auto;
+                flex:1;
+            }
+
+            .cal-grid {
+                overflow:visible;
+                grid-auto-rows:auto;
+            }
+
+            /* Calendar cells — compact, no clipping */
             .cal-cell {
-                padding:4px 3px;
-                min-height:52px;
+                padding:4px 2px;
+                min-height:56px;
+                overflow:visible;
             }
 
             .cell-day {
                 font-size:.72rem;
                 width:24px; height:24px;
-                margin-bottom:2px;
+                margin:0 auto 2px auto;
             }
 
             .cal-cell.today .cell-day {
@@ -749,23 +761,30 @@
                 gap:3px;
                 justify-content:center;
                 padding-top:2px;
+                overflow:visible !important;
+                flex:none;
             }
 
             .cell-ev {
-                font-size:0;
-                width:7px; height:7px;
-                border-radius:50%;
-                padding:0;
+                font-size:0 !important;
+                width:7px !important; 
+                height:7px !important;
+                border-radius:50% !important;
+                padding:0 !important;
                 min-width:7px;
                 min-height:7px;
-                border:none;
+                border:none !important;
+                white-space:normal !important;
+                overflow:visible !important;
+                line-height:0 !important;
+                flex-shrink:0;
             }
 
             /* Bold dot colors for mobile visibility */
-            .c-astro { background:#4f46e5 !important; }
-            .c-birthday { background:#d97706 !important; }
-            .c-memorial { background:#dc2626 !important; }
-            .c-achievement { background:#059669 !important; }
+            .c-astro { background:#4f46e5 !important; color:transparent !important; }
+            .c-birthday { background:#d97706 !important; color:transparent !important; }
+            .c-memorial { background:#dc2626 !important; color:transparent !important; }
+            .c-achievement { background:#059669 !important; color:transparent !important; }
 
             .cell-more { display:none; }
 

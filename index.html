@@ -741,22 +741,31 @@
                 width:24px; height:24px;
             }
 
-            /* Show small dots instead of text for events */
+            /* Show colored dots for events on mobile */
             .cell-events {
                 display:flex !important;
                 flex-direction:row;
                 flex-wrap:wrap;
-                gap:2px;
+                gap:3px;
+                justify-content:center;
+                padding-top:2px;
             }
 
             .cell-ev {
                 font-size:0;
-                width:6px; height:6px;
+                width:7px; height:7px;
                 border-radius:50%;
                 padding:0;
-                min-width:6px;
-                min-height:6px;
+                min-width:7px;
+                min-height:7px;
+                border:none;
             }
+
+            /* Bold dot colors for mobile visibility */
+            .c-astro { background:#4f46e5 !important; }
+            .c-birthday { background:#d97706 !important; }
+            .c-memorial { background:#dc2626 !important; }
+            .c-achievement { background:#059669 !important; }
 
             .cell-more { display:none; }
 
@@ -1288,7 +1297,18 @@ function closeMobileSidebar(){
     document.getElementById('sidebarOverlay').classList.remove('show');
     document.body.style.overflow='';
 }
-function selDay(d){sel=sel===d?null:d;render();}
+function selDay(d){
+    sel=sel===d?null:d;
+    render();
+    // On mobile, auto-open sidebar to show day events
+    if(sel && window.innerWidth<=1024){
+        const sb=document.querySelector('.sidebar');
+        const ov=document.getElementById('sidebarOverlay');
+        sb.classList.add('mobile-open');
+        ov.classList.add('show');
+        document.body.style.overflow='hidden';
+    }
+}
 function togFlt(f){flt.has(f)?flt.delete(f):flt.add(f);render();}
 function changeMonth(d){cM+=d;if(cM<0){cM=11;cY--}if(cM>11){cM=0;cY++}sel=null;render();}
 function goToday(){cY=new Date().getFullYear();cM=new Date().getMonth();sel=new Date().getDate();render();}

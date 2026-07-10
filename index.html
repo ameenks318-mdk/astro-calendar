@@ -725,7 +725,7 @@
                 letter-spacing:.5px;
             }
 
-            /* Calendar grid — allow scroll, no clipping */
+            /* Calendar grid — scrollable so all weeks are reachable */
             .calendar-wrap {
                 overflow:auto;
                 flex:1;
@@ -736,57 +736,56 @@
                 grid-auto-rows:auto;
             }
 
-            /* Calendar cells — compact, no clipping */
+            /* Calendar cells — show event text like desktop, not dots */
             .cal-cell {
-                padding:4px 2px;
-                min-height:56px;
-                overflow:visible;
+                padding:3px 2px;
+                min-height:65px;
+                overflow:hidden;
             }
 
             .cell-day {
                 font-size:.72rem;
-                width:24px; height:24px;
+                width:22px; height:22px;
                 margin:0 auto 2px auto;
             }
 
             .cal-cell.today .cell-day {
-                width:24px; height:24px;
+                width:22px; height:22px;
             }
 
-            /* Show colored dots for events on mobile */
+            /* Keep events as text bars — like desktop but smaller */
             .cell-events {
-                display:flex !important;
-                flex-direction:row;
-                flex-wrap:wrap;
-                gap:3px;
-                justify-content:center;
-                padding-top:2px;
-                overflow:visible !important;
-                flex:none;
+                display:flex;
+                flex-direction:column;
+                gap:1px;
+                overflow:hidden;
+                flex:1;
             }
 
             .cell-ev {
-                font-size:0 !important;
-                width:7px !important; 
-                height:7px !important;
-                border-radius:50% !important;
-                padding:0 !important;
-                min-width:7px;
-                min-height:7px;
-                border:none !important;
-                white-space:normal !important;
-                overflow:visible !important;
-                line-height:0 !important;
+                font-size:.5rem;
+                font-weight:500;
+                padding:1px 3px;
+                border-radius:2px;
+                white-space:nowrap;
+                overflow:hidden;
+                text-overflow:ellipsis;
+                line-height:1.4;
                 flex-shrink:0;
             }
 
-            /* Bold dot colors for mobile visibility */
-            .c-astro { background:#4f46e5 !important; color:transparent !important; }
-            .c-birthday { background:#d97706 !important; color:transparent !important; }
-            .c-memorial { background:#dc2626 !important; color:transparent !important; }
-            .c-achievement { background:#059669 !important; color:transparent !important; }
+            /* Show only 1 event per cell; hide the rest via JS '+N more' */
+            .cell-ev:nth-child(n+2) {
+                display:none;
+            }
 
-            .cell-more { display:none; }
+            .cell-more {
+                font-size:.48rem;
+                font-weight:600;
+                color:#8b8fa3;
+                padding:0 3px;
+                line-height:1.3;
+            }
 
             /* Sidebar mobile full width */
             .sidebar.mobile-open {
@@ -821,6 +820,234 @@
             .cal-cell.today .cell-day { width:20px; height:20px; }
             .cell-ev { width:5px; height:5px; }
             .weekdays div { font-size:.55rem; padding:6px 0; }
+        }
+
+        /* ── ADMIN PANEL ── */
+        .admin-btn {
+            width:34px;
+            height:34px;
+            border:1px solid #e0e1e5;
+            border-radius:8px;
+            background:#fff;
+            color:#8b8fa3;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:18px;
+            transition:.15s;
+            font-family:'Material Symbols Rounded';
+            flex-shrink:0;
+            margin-left:8px;
+        }
+        .admin-btn:hover { background:#f4f5f7; color:#4f46e5; border-color:#c8c9d0; }
+
+        .admin-overlay {
+            position:fixed;
+            inset:0;
+            background:rgba(0,0,0,.35);
+            backdrop-filter:blur(4px);
+            z-index:2000;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            opacity:0;
+            visibility:hidden;
+            transition:.25s;
+        }
+        .admin-overlay.on { opacity:1; visibility:visible; }
+
+        .admin-panel {
+            background:#fff;
+            border-radius:16px;
+            max-width:560px;
+            width:94%;
+            max-height:85vh;
+            overflow:hidden;
+            display:flex;
+            flex-direction:column;
+            transform:translateY(12px) scale(.97);
+            transition:.25s;
+            box-shadow:0 20px 60px rgba(0,0,0,.15), 0 0 0 1px rgba(0,0,0,.04);
+        }
+        .admin-overlay.on .admin-panel { transform:translateY(0) scale(1); }
+
+        .admin-panel-header {
+            padding:20px 24px 16px;
+            border-bottom:1px solid #e8eaed;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+        }
+        .admin-panel-header h2 {
+            font-size:1rem;
+            font-weight:700;
+            color:#1a1a2e;
+            display:flex;
+            align-items:center;
+            gap:8px;
+        }
+        .admin-panel-header h2 span { font-size:20px; color:#4f46e5; }
+
+        .admin-panel-body {
+            padding:20px 24px;
+            overflow-y:auto;
+            flex:1;
+        }
+
+        .admin-form { display:flex; flex-direction:column; gap:12px; }
+        .admin-form label {
+            font-size:.72rem;
+            font-weight:600;
+            color:#4a4a5a;
+            text-transform:uppercase;
+            letter-spacing:.5px;
+            display:flex;
+            flex-direction:column;
+            gap:5px;
+        }
+        .admin-form input,
+        .admin-form select,
+        .admin-form textarea {
+            width:100%;
+            padding:9px 12px;
+            border:1px solid #e0e1e5;
+            border-radius:8px;
+            font-size:.82rem;
+            font-family:'Inter', sans-serif;
+            color:#1a1a2e;
+            background:#f8f9fb;
+            outline:none;
+            transition:.2s;
+        }
+        .admin-form input:focus,
+        .admin-form select:focus,
+        .admin-form textarea:focus {
+            border-color:#4f46e5;
+            background:#fff;
+            box-shadow:0 0 0 3px rgba(79,70,229,.08);
+        }
+        .admin-form textarea { resize:vertical; min-height:60px; }
+        .admin-form .admin-row {
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:12px;
+        }
+        .admin-form .admin-row-3 {
+            display:grid;
+            grid-template-columns:1fr 1fr 1fr;
+            gap:12px;
+        }
+        .admin-save-btn {
+            padding:10px 20px;
+            background:#4f46e5;
+            color:#fff;
+            border:none;
+            border-radius:8px;
+            font-size:.82rem;
+            font-weight:600;
+            font-family:'Inter', sans-serif;
+            cursor:pointer;
+            transition:.15s;
+            margin-top:4px;
+        }
+        .admin-save-btn:hover { background:#4338ca; }
+
+        .admin-divider {
+            margin:20px 0 16px;
+            border:none;
+            border-top:1px solid #e8eaed;
+        }
+
+        .admin-section-title {
+            font-size:.72rem;
+            font-weight:600;
+            text-transform:uppercase;
+            letter-spacing:1px;
+            color:#8b8fa3;
+            margin-bottom:10px;
+        }
+
+        .custom-event-list {
+            display:flex;
+            flex-direction:column;
+            gap:6px;
+            max-height:200px;
+            overflow-y:auto;
+        }
+        .custom-event-list::-webkit-scrollbar { width:4px; }
+        .custom-event-list::-webkit-scrollbar-thumb { background:#e0e1e5; border-radius:2px; }
+
+        .custom-event-item {
+            display:flex;
+            align-items:center;
+            gap:10px;
+            padding:8px 12px;
+            background:#f8f9fb;
+            border-radius:8px;
+            border:1px solid #f0f1f3;
+            transition:.15s;
+        }
+        .custom-event-item:hover { border-color:#e0e1e5; }
+        .custom-event-item .ce-icon { font-size:16px; flex-shrink:0; }
+        .custom-event-item .ce-info { flex:1; min-width:0; }
+        .custom-event-item .ce-name {
+            font-size:.78rem;
+            font-weight:600;
+            color:#1a1a2e;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+        }
+        .custom-event-item .ce-meta {
+            font-size:.65rem;
+            color:#8b8fa3;
+            font-weight:500;
+        }
+
+        .admin-delete-btn {
+            width:28px;
+            height:28px;
+            border:1px solid #fecaca;
+            border-radius:6px;
+            background:#fff;
+            color:#dc2626;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:16px;
+            font-family:'Material Symbols Rounded';
+            transition:.15s;
+            flex-shrink:0;
+        }
+        .admin-delete-btn:hover { background:#fef2f2; border-color:#dc2626; }
+
+        .custom-empty {
+            text-align:center;
+            padding:16px;
+            color:#b0b3c1;
+            font-size:.78rem;
+        }
+
+        @media (max-width:768px) {
+            .admin-btn {
+                width:32px; height:32px;
+                font-size:16px;
+                border-radius:6px;
+            }
+            .admin-panel {
+                width:95vw;
+                max-width:95vw;
+                max-height:90vh;
+                border-radius:12px;
+            }
+            .admin-panel-header { padding:16px; }
+            .admin-panel-body { padding:16px; }
+            .admin-form .admin-row,
+            .admin-form .admin-row-3 {
+                grid-template-columns:1fr;
+            }
         }
 
         /* ── SCROLLBAR GLOBAL ── */
@@ -868,6 +1095,7 @@
             <div class="month-label" id="monthLabel"></div>
             <button class="today-btn" onclick="goToday()">Today</button>
             <div class="stats-pills" id="statsPills"></div>
+            <button class="admin-btn" onclick="adminAuth()" title="Admin Panel">lock</button>
         </div>
 
         <div class="calendar-wrap">
@@ -894,11 +1122,54 @@
     </div>
 </div>
 
+<!-- ── ADMIN PANEL ── -->
+<div class="admin-overlay" id="adminOverlay" onclick="if(event.target===this)closeAdmin()">
+    <div class="admin-panel">
+        <div class="admin-panel-header">
+            <h2><span class="material-symbols-rounded">admin_panel_settings</span> Admin Panel</h2>
+            <button class="modal-close" onclick="closeAdmin()">close</button>
+        </div>
+        <div class="admin-panel-body">
+            <div class="admin-form" id="adminForm">
+                <div class="admin-row-3">
+                    <label>Month
+                        <select id="aMonth"></select>
+                    </label>
+                    <label>Day
+                        <select id="aDay"></select>
+                    </label>
+                    <label>Type
+                        <select id="aType"></select>
+                    </label>
+                </div>
+                <div class="admin-row">
+                    <label>Icon (emoji)
+                        <input type="text" id="aIcon" placeholder="🌟" maxlength="4">
+                    </label>
+                    <label>Field
+                        <input type="text" id="aField" placeholder="e.g. Astrophysics">
+                    </label>
+                </div>
+                <label>Event Name
+                    <input type="text" id="aName" placeholder="Event name…">
+                </label>
+                <label>Description
+                    <textarea id="aDesc" placeholder="Event description…"></textarea>
+                </label>
+                <button class="admin-save-btn" onclick="saveCustomEvent()">✦ Add Event</button>
+            </div>
+            <hr class="admin-divider">
+            <div class="admin-section-title">Custom Events</div>
+            <div class="custom-event-list" id="customList"></div>
+        </div>
+    </div>
+</div>
+
 <script>
 // ═══════════════════════════════════════════════════
 // DATA
 // ═══════════════════════════════════════════════════
-const E=[
+let E=[
 // ── ASTRONOMICAL ──
 {m:1,d:2,t:'astro',i:'☀️',n:'Earth at Perihelion',x:'Earth reaches its closest point to the Sun at ~147.1 million km. Despite being closest, the Northern Hemisphere has winter due to axial tilt of 23.44°.',f:'Orbital Mechanics'},
 {m:1,d:3,t:'astro',i:'☄️',n:'Quadrantids Meteor Shower Peak',x:'One of the strongest annual showers with up to 120 meteors/hour. Originates from asteroid 2003 EH1 (possibly a dead comet). Best viewed after midnight.',f:'Meteor Shower'},
@@ -1406,6 +1677,104 @@ function openM(idx){
 
 function closeModal(){document.getElementById('mOverlay').classList.remove('on');}
 
+// ═══════════════════════════════════════════════════
+// ADMIN PANEL
+// ═══════════════════════════════════════════════════
+let adminAuthenticated=false;
+
+function adminAuth(){
+    if(adminAuthenticated){ showAdmin(); return; }
+    const pw=prompt('Enter admin password:');
+    if(pw===null) return;
+    if(pw==='baselius2024'){
+        adminAuthenticated=true;
+        showAdmin();
+    } else {
+        alert('Incorrect password.');
+    }
+}
+
+function showAdmin(){
+    populateAdminForm();
+    renderCustomList();
+    document.getElementById('adminOverlay').classList.add('on');
+}
+
+function closeAdmin(){
+    document.getElementById('adminOverlay').classList.remove('on');
+}
+
+function populateAdminForm(){
+    const ms=document.getElementById('aMonth');
+    const ds=document.getElementById('aDay');
+    const ts=document.getElementById('aType');
+    if(!ms.children.length){
+        MN.forEach((n,i)=>ms.innerHTML+=`<option value="${i+1}">${n}</option>`);
+        for(let i=1;i<=31;i++) ds.innerHTML+=`<option value="${i}">${i}</option>`;
+        Object.entries(T).forEach(([k,v])=>ts.innerHTML+=`<option value="${k}">${v.e} ${v.l}</option>`);
+    }
+}
+
+function saveCustomEvent(){
+    const m=parseInt(document.getElementById('aMonth').value);
+    const d=parseInt(document.getElementById('aDay').value);
+    const t=document.getElementById('aType').value;
+    const i=document.getElementById('aIcon').value.trim()||T[t].e;
+    const n=document.getElementById('aName').value.trim();
+    const x=document.getElementById('aDesc').value.trim();
+    const f=document.getElementById('aField').value.trim();
+    if(!n){ alert('Please enter an event name.'); return; }
+    if(!x){ alert('Please enter a description.'); return; }
+    const ev={m,d,t,i,n,x,f,custom:true};
+    const customs=JSON.parse(localStorage.getItem('astro_custom_events')||'[]');
+    customs.push(ev);
+    localStorage.setItem('astro_custom_events',JSON.stringify(customs));
+    E.push(ev);
+    // Reset form
+    document.getElementById('aIcon').value='';
+    document.getElementById('aName').value='';
+    document.getElementById('aDesc').value='';
+    document.getElementById('aField').value='';
+    renderCustomList();
+    render();
+}
+
+function deleteCustomEvent(index){
+    const customs=JSON.parse(localStorage.getItem('astro_custom_events')||'[]');
+    const removed=customs.splice(index,1)[0];
+    localStorage.setItem('astro_custom_events',JSON.stringify(customs));
+    // Remove from E array
+    const ei=E.findIndex(e=>e.custom&&e.m===removed.m&&e.d===removed.d&&e.n===removed.n);
+    if(ei!==-1) E.splice(ei,1);
+    renderCustomList();
+    render();
+}
+
+function loadCustomEvents(){
+    const customs=JSON.parse(localStorage.getItem('astro_custom_events')||'[]');
+    customs.forEach(ev=>{ ev.custom=true; E.push(ev); });
+}
+
+function renderCustomList(){
+    const list=document.getElementById('customList');
+    const customs=JSON.parse(localStorage.getItem('astro_custom_events')||'[]');
+    if(!customs.length){
+        list.innerHTML='<div class="custom-empty">No custom events yet</div>';
+        return;
+    }
+    list.innerHTML=customs.map((e,i)=>{
+        const tInfo=T[e.t]||{l:'Unknown',e:'❓'};
+        return `<div class="custom-event-item">
+            <span class="ce-icon">${e.i}</span>
+            <div class="ce-info">
+                <div class="ce-name">${e.n}</div>
+                <div class="ce-meta">${MN[e.m-1]} ${e.d} · ${tInfo.l}${e.f?' · '+e.f:''}</div>
+            </div>
+            <button class="admin-delete-btn" onclick="deleteCustomEvent(${i})" title="Delete">delete</button>
+        </div>`;
+    }).join('');
+}
+
 function clearSearch(){
     document.getElementById('searchInput').value='';q='';
     document.getElementById('clearBtn').classList.remove('show');
@@ -1422,17 +1791,18 @@ document.getElementById('searchInput').addEventListener('input',ev=>{
 });
 
 document.addEventListener('keydown',ev=>{
-    if(ev.target.tagName==='INPUT') return;
+    if(ev.target.tagName==='INPUT'||ev.target.tagName==='TEXTAREA') return;
     if(ev.key==='ArrowLeft') changeMonth(-1);
     if(ev.key==='ArrowRight') changeMonth(1);
     if(ev.key.toLowerCase()==='t') goToday();
-    if(ev.key==='Escape') closeModal();
+    if(ev.key==='Escape'){ closeModal(); closeAdmin(); }
 });
 
 // ═══════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════
 
+loadCustomEvents();
 render();
 </script>
 </body>

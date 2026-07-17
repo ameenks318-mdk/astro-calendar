@@ -1,8 +1,8 @@
-const CACHE_NAME = 'astro-calendar-v1';
+const CACHE_NAME = 'astro-calendar-v2';
 const ASSETS = [
   './',
   './index.html',
-  './logo.png',
+  './logo.webp',
   './manifest.json',
   'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap',
   'https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0'

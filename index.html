@@ -96,6 +96,49 @@
             border-radius:12px;
         }
 
+        /* Department List */
+        .dept-section {
+            margin-top:10px;
+            width:100%;
+        }
+
+        .dept-heading {
+            font-size:.58rem;
+            font-weight:700;
+            color:#8b8fa3;
+            text-transform:uppercase;
+            letter-spacing:1.2px;
+            margin:8px 0 5px 2px;
+        }
+
+        .dept-grid {
+            display:flex;
+            flex-wrap:wrap;
+            gap:4px;
+        }
+
+        .dept-pill {
+            font-size:.56rem;
+            font-weight:500;
+            padding:3px 8px;
+            border-radius:10px;
+            background:#f4f4f8;
+            color:#3d3d56;
+            white-space:nowrap;
+            transition: all .15s;
+        }
+
+        .dept-pill:hover {
+            background:#eef2ff;
+            color:#4f46e5;
+        }
+
+        .dept-pill.highlight {
+            background:rgba(79,70,229,.1);
+            color:#4f46e5;
+            font-weight:600;
+        }
+
         /* Search */
         .search-box {
             position:relative;
@@ -1070,6 +1113,42 @@
             <div class="college-brand">
                 <img src="logo.webp" onerror="this.src='https://baselius.ac.in/wp-content/uploads/2026/02/baselius-logo-test.webp'" alt="Baselius College Logo" class="college-logo">
                 <div class="college-dept">🔭 Astronomical Calendar</div>
+
+                <div class="dept-section">
+                    <div class="dept-heading">📚 Science Departments</div>
+                    <div class="dept-grid">
+                        <span class="dept-pill highlight">⚛️ Physics</span>
+                        <span class="dept-pill highlight">🧪 Chemistry</span>
+                        <span class="dept-pill">📐 Mathematics & Statistics</span>
+                        <span class="dept-pill">🌿 Botany</span>
+                        <span class="dept-pill">🦠 Zoology</span>
+                    </div>
+
+                    <div class="dept-heading">📖 Arts Departments</div>
+                    <div class="dept-grid">
+                        <span class="dept-pill">📝 English</span>
+                        <span class="dept-pill">📜 Malayalam</span>
+                        <span class="dept-pill">📊 Economics</span>
+                        <span class="dept-pill">🏛️ Political Science</span>
+                    </div>
+
+                    <div class="dept-heading">💼 Commerce & Others</div>
+                    <div class="dept-grid">
+                        <span class="dept-pill">💰 Commerce</span>
+                        <span class="dept-pill">📈 Business Admin</span>
+                        <span class="dept-pill">🏃 Physical Education</span>
+                    </div>
+
+                    <div class="dept-heading">📋 Minors & AEC</div>
+                    <div class="dept-grid">
+                        <span class="dept-pill">🔌 Electronics</span>
+                        <span class="dept-pill">📕 Sanskrit</span>
+                        <span class="dept-pill">📗 Hindi</span>
+                        <span class="dept-pill">📘 History</span>
+                        <span class="dept-pill">📙 Syriac</span>
+                        <span class="dept-pill">📊 Data Analytics</span>
+                    </div>
+                </div>
             </div>
             <div class="search-box">
                 <span class="s-icon material-symbols-rounded">search</span>

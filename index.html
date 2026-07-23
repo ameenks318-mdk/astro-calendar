@@ -2012,6 +2012,11 @@ document.addEventListener('keydown',ev=>{
 
 loadCustomEvents();
 render();
+
+// Auto-open admin panel via URL: ?admin=true
+if(new URLSearchParams(window.location.search).get('admin')==='true'){
+    adminAuth();
+}
 </script>
 <script>
 // Register Service Worker for PWA

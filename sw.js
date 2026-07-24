@@ -1,4 +1,4 @@
-const CACHE_NAME = 'astro-calendar-v2';
+const CACHE_NAME = 'astro-calendar-v3';
 const ASSETS = [
   './',
   './index.html',

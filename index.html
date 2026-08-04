@@ -96,47 +96,150 @@
             border-radius:12px;
         }
 
-        /* Department List */
-        .dept-section {
+        /* Physics Department Profile */
+        .dept-profile {
             margin-top:10px;
             width:100%;
         }
 
-        .dept-heading {
-            font-size:.58rem;
+        .dept-profile-title {
+            font-size:.62rem;
             font-weight:700;
-            color:#8b8fa3;
-            text-transform:uppercase;
-            letter-spacing:1.2px;
-            margin:8px 0 5px 2px;
+            color:#1a1a2e;
+            text-align:center;
+            line-height:1.4;
         }
 
-        .dept-grid {
+        .dept-profile-sub {
+            font-size:.52rem;
+            color:#6b7280;
+            text-align:center;
+            margin-top:2px;
+            line-height:1.5;
+        }
+
+        .dept-profile-tags {
             display:flex;
             flex-wrap:wrap;
-            gap:4px;
+            justify-content:center;
+            gap:3px;
+            margin-top:6px;
         }
 
-        .dept-pill {
+        .dept-tag {
+            font-size:.48rem;
+            font-weight:600;
+            padding:2px 6px;
+            border-radius:8px;
+            background:rgba(79,70,229,.06);
+            color:#4f46e5;
+        }
+
+        .dept-website {
+            display:block;
+            text-align:center;
+            font-size:.52rem;
+            color:#4f46e5;
+            margin-top:4px;
+            text-decoration:none;
+        }
+
+        .dept-website:hover { text-decoration:underline; }
+
+        .dept-accordion {
+            margin-top:8px;
+            width:100%;
+        }
+
+        .dept-acc-btn {
+            width:100%;
+            padding:6px 8px;
+            background:#f8f9fb;
+            border:1px solid #eef0f2;
+            border-radius:8px;
+            cursor:pointer;
             font-size:.56rem;
-            font-weight:500;
-            padding:3px 8px;
-            border-radius:10px;
-            background:#f4f4f8;
+            font-weight:600;
             color:#3d3d56;
-            white-space:nowrap;
-            transition: all .15s;
+            text-align:left;
+            margin-bottom:3px;
+            transition:all .15s;
         }
 
-        .dept-pill:hover {
+        .dept-acc-btn:hover {
             background:#eef2ff;
             color:#4f46e5;
+            border-color:#c7d2fe;
         }
 
-        .dept-pill.highlight {
-            background:rgba(79,70,229,.1);
-            color:#4f46e5;
+        .dept-acc-content {
+            display:none;
+            padding:6px 8px;
+            font-size:.52rem;
+            color:#4a4a5a;
+            line-height:1.6;
+            border-left:2px solid #4f46e5;
+            margin:0 0 6px 4px;
+        }
+
+        .dept-acc-content.open { display:block; }
+
+        .dept-acc-content ul {
+            list-style:none;
+            padding:0;
+            margin:0;
+        }
+
+        .dept-acc-content li {
+            padding:1px 0;
+        }
+
+        .dept-stats {
+            display:flex;
+            justify-content:center;
+            gap:10px;
+            margin-top:6px;
+        }
+
+        .dept-stat {
+            text-align:center;
+            font-size:.5rem;
+            color:#3d3d56;
             font-weight:600;
+            line-height:1.4;
+        }
+
+        .dept-stat span {
+            display:block;
+            font-size:.7rem;
+        }
+
+        .dept-apply-btn {
+            display:block;
+            width:100%;
+            padding:8px;
+            margin-top:8px;
+            background:linear-gradient(135deg,#4f46e5,#7c3aed);
+            color:#fff;
+            text-align:center;
+            text-decoration:none;
+            border-radius:10px;
+            font-size:.58rem;
+            font-weight:700;
+            letter-spacing:.5px;
+            transition:all .2s;
+        }
+
+        .dept-apply-btn:hover {
+            transform:translateY(-1px);
+            box-shadow:0 4px 14px rgba(79,70,229,.4);
+        }
+
+        .dept-contact {
+            text-align:center;
+            font-size:.5rem;
+            color:#6b7280;
+            margin-top:4px;
         }
 
         /* Signature Footer */
@@ -1201,40 +1304,116 @@
                 <img src="logo.webp" onerror="this.src='https://baselius.ac.in/wp-content/uploads/2026/02/baselius-logo-test.webp'" alt="Baselius College Logo" class="college-logo">
                 <div class="college-dept">🔭 Astronomical Calendar</div>
 
-                <div class="dept-section">
-                    <div class="dept-heading">📚 Science Departments</div>
-                    <div class="dept-grid">
-                        <span class="dept-pill highlight">⚛️ Physics</span>
-                        <span class="dept-pill highlight">🧪 Chemistry</span>
-                        <span class="dept-pill">📐 Mathematics & Statistics</span>
-                        <span class="dept-pill">🌿 Botany</span>
-                        <span class="dept-pill">🦠 Zoology</span>
+                <div class="dept-profile">
+                    <div class="dept-profile-title">⚛️ Postgraduate Department of Physics<br>& Centre for Research</div>
+                    <div class="dept-profile-sub">Baselius College, Kottayam<br>Autonomous Institution | NAAC A++ Grade</div>
+                    <a href="https://www.baselius.ac.in" target="_blank" class="dept-website">www.baselius.ac.in</a>
+
+                    <div class="dept-profile-tags">
+                        <span class="dept-tag">Academic Excellence</span>
+                        <span class="dept-tag">Research</span>
+                        <span class="dept-tag">Skill Development</span>
+                        <span class="dept-tag">Career Focus</span>
+                        <span class="dept-tag">Placement</span>
                     </div>
 
-                    <div class="dept-heading">📖 Arts Departments</div>
-                    <div class="dept-grid">
-                        <span class="dept-pill">📝 English</span>
-                        <span class="dept-pill">📜 Malayalam</span>
-                        <span class="dept-pill">📊 Economics</span>
-                        <span class="dept-pill">🏛️ Political Science</span>
+                    <div class="dept-stats">
+                        <div class="dept-stat"><span>👨‍🏫</span>9 Faculty</div>
+                        <div class="dept-stat"><span>🎓</span>6 Research Guides</div>
+                        <div class="dept-stat"><span>📘</span>9 PhD Scholars</div>
                     </div>
 
-                    <div class="dept-heading">💼 Commerce & Others</div>
-                    <div class="dept-grid">
-                        <span class="dept-pill">💰 Commerce</span>
-                        <span class="dept-pill">📈 Business Admin</span>
-                        <span class="dept-pill">🏃 Physical Education</span>
+                    <div class="dept-accordion">
+                        <button class="dept-acc-btn" onclick="toggleAcc(this)">🎓 Programmes Offered</button>
+                        <div class="dept-acc-content">
+                            <ul>
+                                <li>• B.Sc. Physics (Hons.)</li>
+                                <li>• M.Sc. Physics</li>
+                                <li>• Ph.D. in Physics</li>
+                            </ul>
+                        </div>
+
+                        <button class="dept-acc-btn" onclick="toggleAcc(this)">🔬 Research Strengths</button>
+                        <div class="dept-acc-content">
+                            <ul>
+                                <li>✨ Photonics</li>
+                                <li>✨ Materials Science</li>
+                                <li>✨ Solar Cells</li>
+                                <li>✨ Conducting Polymers</li>
+                                <li>✨ Nanotechnology</li>
+                                <li>✨ Photoluminescent Materials</li>
+                                <li>✔ Funded Research & Start-up Projects</li>
+                                <li>✔ Well-equipped Research Facilities</li>
+                            </ul>
+                        </div>
+
+                        <button class="dept-acc-btn" onclick="toggleAcc(this)">🤝 Collaborations & Exposure</button>
+                        <div class="dept-acc-content">
+                            <ul>
+                                <li>• Industry Collaboration</li>
+                                <li>• Academic Collaboration with Universities</li>
+                                <li>• Research Projects at Collaborated Institutions</li>
+                                <li>• Internship Opportunities</li>
+                            </ul>
+                        </div>
+
+                        <button class="dept-acc-btn" onclick="toggleAcc(this)">⭐ Unique Offerings</button>
+                        <div class="dept-acc-content">
+                            <ul>
+                                <li>• Minor in Electronics with Computer Technology</li>
+                                <li>• Electronics with AI & Robotics Projects</li>
+                                <li>• Telescope Making Training & Sky Watch</li>
+                            </ul>
+                        </div>
+
+                        <button class="dept-acc-btn" onclick="toggleAcc(this)">🎓 Scholarships</button>
+                        <div class="dept-acc-content">
+                            <ul>
+                                <li>• Merit-Based Scholarships Every Semester</li>
+                                <li>• Top 10% Students – 100% Fee Waiver</li>
+                                <li>• Performance-Based Scholarships</li>
+                            </ul>
+                        </div>
+
+                        <button class="dept-acc-btn" onclick="toggleAcc(this)">🛠 Skills & Career</button>
+                        <div class="dept-acc-content">
+                            <ul>
+                                <li>📌 Python Programming</li>
+                                <li>📌 Career Guidance & Mentoring</li>
+                                <li>📌 Electronic Circuits & Networking</li>
+                                <li>📌 Energy Auditing</li>
+                                <li>📌 Robotics, AR/VR & LED Making</li>
+                                <li>🎯 SWAYAM / NPTEL / MOOC Credits</li>
+                            </ul>
+                        </div>
+
+                        <button class="dept-acc-btn" onclick="toggleAcc(this)">🏆 Achievements</button>
+                        <div class="dept-acc-content">
+                            <ul>
+                                <li>📚 International Journal Publications</li>
+                                <li>📖 Books by Faculty & Students</li>
+                                <li>🎤 National & International Workshops</li>
+                            </ul>
+                        </div>
+
+                        <button class="dept-acc-btn" onclick="toggleAcc(this)">✅ Why Choose Us?</button>
+                        <div class="dept-acc-content">
+                            <ul>
+                                <li>✔ NAAC A++ Grade</li>
+                                <li>✔ Strong Research Ecosystem</li>
+                                <li>✔ Experienced Faculty & Research Guides</li>
+                                <li>✔ Active Alumni Support</li>
+                                <li>✔ Merit Scholarships & Fee Waivers</li>
+                                <li>✔ AI, Robotics, Nanotech, AR/VR</li>
+                                <li>✔ Timing: 8:30 AM – 1:45 PM</li>
+                                <li>✔ Part-Time Job Opportunities</li>
+                                <li>✔ Industry & Academic Collaborations</li>
+                            </ul>
+                        </div>
                     </div>
 
-                    <div class="dept-heading">📋 Minors & AEC</div>
-                    <div class="dept-grid">
-                        <span class="dept-pill">🔌 Electronics</span>
-                        <span class="dept-pill">📕 Sanskrit</span>
-                        <span class="dept-pill">📗 Hindi</span>
-                        <span class="dept-pill">📘 History</span>
-                        <span class="dept-pill">📙 Syriac</span>
-                        <span class="dept-pill">📊 Data Analytics</span>
-                    </div>
+                    <a href="https://forms.gle/xtH8GfzY4Rp5U8if6" target="_blank" class="dept-apply-btn">📝 APPLY NOW</a>
+                    <div class="dept-contact">📞 Contact: 9747620918</div>
                 </div>
             </div>
             <div class="search-box">
@@ -1993,6 +2172,12 @@ function openM(idx){
     body+=`<a href="${wikiUrl}" target="_blank" rel="noopener" class="wiki-link">🌐 Read on Wikipedia →</a>`;
     document.getElementById('mBody').innerHTML=body;
     document.getElementById('mOverlay').classList.add('on');
+}
+
+// Accordion toggle for dept profile
+function toggleAcc(btn){
+    const content=btn.nextElementSibling;
+    content.classList.toggle('open');
 }
 
 function closeModal(){document.getElementById('mOverlay').classList.remove('on');}

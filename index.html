@@ -852,23 +852,51 @@
             display:inline-flex;
             align-items:center;
             gap:6px;
-            margin-top:14px;
-            padding:8px 16px;
-            background:#f0f4ff;
-            color:#4f46e5;
+            padding:6px 12px;
             text-decoration:none;
-            border-radius:20px;
-            font-size:.75rem;
+            border-radius:16px;
+            font-size:.65rem;
             font-weight:600;
             transition:all .2s;
-            border:1px solid rgba(79,70,229,.15);
+            border:1px solid transparent;
         }
 
         .wiki-link:hover {
-            background:#4f46e5;
-            color:#fff;
             transform:translateY(-1px);
-            box-shadow:0 4px 12px rgba(79,70,229,.3);
+            box-shadow:0 3px 10px rgba(0,0,0,.12);
+        }
+
+        .wiki-link.wiki { background:#f0f4ff; color:#4f46e5; border-color:rgba(79,70,229,.15); }
+        .wiki-link.wiki:hover { background:#4f46e5; color:#fff; }
+
+        .wiki-link.scholar { background:#fff7ed; color:#ea580c; border-color:rgba(234,88,12,.15); }
+        .wiki-link.scholar:hover { background:#ea580c; color:#fff; }
+
+        .wiki-link.britannica { background:#f0fdf4; color:#16a34a; border-color:rgba(22,163,74,.15); }
+        .wiki-link.britannica:hover { background:#16a34a; color:#fff; }
+
+        .wiki-link.google { background:#f8f9fb; color:#3d3d56; border-color:#e0e1e5; }
+        .wiki-link.google:hover { background:#3d3d56; color:#fff; }
+
+        .read-more-section {
+            margin-top:14px;
+            padding-top:14px;
+            border-top:1px solid #f0f1f3;
+        }
+
+        .read-more-label {
+            font-size:.6rem;
+            font-weight:700;
+            color:#8b8fa3;
+            text-transform:uppercase;
+            letter-spacing:1px;
+            margin-bottom:8px;
+        }
+
+        .read-more-links {
+            display:flex;
+            flex-wrap:wrap;
+            gap:6px;
         }
 
         .wiki-link svg {
@@ -2169,13 +2197,21 @@ function openM(idx){
     document.getElementById('mIcon').textContent=e.i;
     document.getElementById('mTitle').textContent=e.n;
     document.getElementById('mType').innerHTML=`<span style="color:${T[e.t].c}">${T[e.t].e} ${T[e.t].l} — ${MN[e.m-1]} ${e.d}</span>`;
-    // Extract search term for Wikipedia
+    // Extract search term
     let searchTerm=e.n.split('—')[0].split('(')[0].trim();
     searchTerm=searchTerm.replace(/^(Discovery of|First|India's) /i,'');
-    const wikiUrl='https://en.wikipedia.org/w/index.php?search='+encodeURIComponent(searchTerm);
+    const q=encodeURIComponent(searchTerm);
+    const qFull=encodeURIComponent(searchTerm+' '+( e.f||'science'));
     let body=`<p>${e.x}</p>`;
     if(e.f) body+=`<div class="modal-field"><strong>Field:</strong> ${e.f}</div>`;
-    body+=`<a href="${wikiUrl}" target="_blank" rel="noopener" class="wiki-link">🌐 Read on Wikipedia →</a>`;
+    body+=`<div class="read-more-section">`;
+    body+=`<div class="read-more-label">📖 Read More</div>`;
+    body+=`<div class="read-more-links">`;
+    body+=`<a href="https://en.wikipedia.org/w/index.php?search=${q}" target="_blank" rel="noopener" class="wiki-link wiki">🌐 Wikipedia</a>`;
+    body+=`<a href="https://scholar.google.com/scholar?q=${qFull}" target="_blank" rel="noopener" class="wiki-link scholar">📄 Google Scholar</a>`;
+    body+=`<a href="https://www.britannica.com/search?query=${q}" target="_blank" rel="noopener" class="wiki-link britannica">📗 Britannica</a>`;
+    body+=`<a href="https://www.google.com/search?q=${qFull}" target="_blank" rel="noopener" class="wiki-link google">🔍 Google</a>`;
+    body+=`</div></div>`;
     document.getElementById('mBody').innerHTML=body;
     document.getElementById('mOverlay').classList.add('on');
 }

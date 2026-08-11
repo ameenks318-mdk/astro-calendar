@@ -2186,20 +2186,92 @@ function toggleAcc(btn){
 function closeModal(){document.getElementById('mOverlay').classList.remove('on');}
 
 // ═══════════════════════════════════════════════════
-// ADMIN PANEL
+// ADMIN PANEL — SECURITY
 // ═══════════════════════════════════════════════════
 let adminAuthenticated=false;
+let failedAttempts=parseInt(localStorage.getItem('admin_fails')||'0');
+let lockoutUntil=parseInt(localStorage.getItem('admin_lockout')||'0');
+let sessionTimer=null;
+const MAX_ATTEMPTS=5;
+const LOCKOUT_MS=5*60*1000; // 5 minutes
+const SESSION_TIMEOUT_MS=30*60*1000; // 30 minutes
 
-function adminAuth(){
-    if(adminAuthenticated){ showAdmin(); return; }
-    const pw=prompt('Enter admin password:');
+// SHA-256 hash function
+async function sha256(msg){
+    const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(msg));
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// Password hash (SHA-256 of 'baselius2024')
+const PWD_HASH='b8cbcb91731e394fcbd5f3220a0bd76651c43cd9d3ebf510afec3c543fa8aa66';
+
+async function adminAuth(){
+    if(adminAuthenticated){ resetSessionTimer(); showAdmin(); return; }
+
+    // Check lockout
+    const now=Date.now();
+    if(now<lockoutUntil){
+        const mins=Math.ceil((lockoutUntil-now)/60000);
+        alert(`Too many failed attempts. Try again in ${mins} minute(s).`);
+        return;
+    }
+
+    const pw=prompt('🔒 Enter admin password:');
     if(pw===null) return;
-    if(pw==='baselius2024'){
+
+    const hash=await sha256(pw);
+    if(hash===PWD_HASH){
         adminAuthenticated=true;
+        failedAttempts=0;
+        localStorage.setItem('admin_fails','0');
+        localStorage.removeItem('admin_lockout');
+        sessionStorage.setItem('admin_session',Date.now().toString());
+        startSessionTimer();
         showAdmin();
     } else {
-        alert('Incorrect password.');
+        failedAttempts++;
+        localStorage.setItem('admin_fails',failedAttempts.toString());
+        const remaining=MAX_ATTEMPTS-failedAttempts;
+        if(remaining<=0){
+            lockoutUntil=Date.now()+LOCKOUT_MS;
+            localStorage.setItem('admin_lockout',lockoutUntil.toString());
+            failedAttempts=0;
+            localStorage.setItem('admin_fails','0');
+            alert('🚫 Account locked for 5 minutes due to too many failed attempts.');
+        } else {
+            alert(`❌ Incorrect password. ${remaining} attempt(s) remaining.`);
+        }
     }
+}
+
+function startSessionTimer(){
+    clearTimeout(sessionTimer);
+    sessionTimer=setTimeout(()=>{
+        adminAuthenticated=false;
+        sessionStorage.removeItem('admin_session');
+        closeAdmin();
+        alert('⏱️ Admin session expired. Please log in again.');
+    },SESSION_TIMEOUT_MS);
+}
+
+function resetSessionTimer(){
+    if(adminAuthenticated) startSessionTimer();
+}
+
+// Restore session if still valid
+(function checkSession(){
+    const s=sessionStorage.getItem('admin_session');
+    if(s && (Date.now()-parseInt(s))<SESSION_TIMEOUT_MS){
+        adminAuthenticated=true;
+        startSessionTimer();
+    }
+})();
+
+// Sanitize input to prevent XSS
+function sanitize(str){
+    const d=document.createElement('div');
+    d.textContent=str;
+    return d.innerHTML;
 }
 
 function showAdmin(){
@@ -2227,12 +2299,14 @@ function saveCustomEvent(){
     const m=parseInt(document.getElementById('aMonth').value);
     const d=parseInt(document.getElementById('aDay').value);
     const t=document.getElementById('aType').value;
-    const i=document.getElementById('aIcon').value.trim()||T[t].e;
-    const n=document.getElementById('aName').value.trim();
-    const x=document.getElementById('aDesc').value.trim();
-    const f=document.getElementById('aField').value.trim();
+    const i=sanitize(document.getElementById('aIcon').value.trim()||T[t].e);
+    const n=sanitize(document.getElementById('aName').value.trim());
+    const x=sanitize(document.getElementById('aDesc').value.trim());
+    const f=sanitize(document.getElementById('aField').value.trim());
     if(!n){ alert('Please enter an event name.'); return; }
     if(!x){ alert('Please enter a description.'); return; }
+    if(n.length>100){ alert('Event name too long (max 100 chars).'); return; }
+    if(x.length>500){ alert('Description too long (max 500 chars).'); return; }
     const ev={m,d,t,i,n,x,f,custom:true};
     const customs=JSON.parse(localStorage.getItem('astro_custom_events')||'[]');
     customs.push(ev);

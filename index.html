@@ -2172,7 +2172,7 @@ function openM(idx){
     // Extract search term for Wikipedia
     let searchTerm=e.n.split('—')[0].split('(')[0].trim();
     searchTerm=searchTerm.replace(/^(Discovery of|First|India's) /i,'');
-    const wikiUrl='https://en.wikipedia.org/wiki/Special:Search/'+encodeURIComponent(searchTerm);
+    const wikiUrl='https://en.wikipedia.org/w/index.php?search='+encodeURIComponent(searchTerm);
     let body=`<p>${e.x}</p>`;
     if(e.f) body+=`<div class="modal-field"><strong>Field:</strong> ${e.f}</div>`;
     body+=`<a href="${wikiUrl}" target="_blank" rel="noopener" class="wiki-link">🌐 Read on Wikipedia →</a>`;

@@ -7,6 +7,9 @@
     <title>Astronomical Calendar — Baselius College, Kottayam</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#4f46e5">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; script-src 'self' 'unsafe-inline'; connect-src 'self' https:;">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Astro Calendar">
@@ -2274,6 +2277,28 @@ function sanitize(str){
     return d.innerHTML;
 }
 
+// Sign custom events data for tamper detection
+function signData(){
+    const data=localStorage.getItem('astro_custom_events')||'[]';
+    let hash=0;
+    for(let i=0;i<data.length;i++){hash=((hash<<5)-hash)+data.charCodeAt(i);hash|=0;}
+    localStorage.setItem('astro_data_sig',hash.toString());
+}
+
+// Audit log for admin actions
+function logAdminAction(action,detail){
+    const log=JSON.parse(localStorage.getItem('admin_audit_log')||'[]');
+    log.push({
+        action,
+        detail,
+        time:new Date().toISOString(),
+        ua:navigator.userAgent.substring(0,50)
+    });
+    // Keep last 100 entries
+    if(log.length>100) log.splice(0,log.length-100);
+    localStorage.setItem('admin_audit_log',JSON.stringify(log));
+}
+
 function showAdmin(){
     populateAdminForm();
     renderCustomList();
@@ -2317,14 +2342,19 @@ function saveCustomEvent(){
     document.getElementById('aName').value='';
     document.getElementById('aDesc').value='';
     document.getElementById('aField').value='';
+    signData();
+    logAdminAction('ADD',`${n} (${MN[m-1]} ${d})`);
     renderCustomList();
     render();
 }
 
 function deleteCustomEvent(index){
+    if(!confirm('Are you sure you want to delete this event?')) return;
     const customs=JSON.parse(localStorage.getItem('astro_custom_events')||'[]');
     const removed=customs.splice(index,1)[0];
     localStorage.setItem('astro_custom_events',JSON.stringify(customs));
+    signData();
+    logAdminAction('DELETE',`${removed.n} (${MN[removed.m-1]} ${removed.d})`);
     // Remove from E array
     const ei=E.findIndex(e=>e.custom&&e.m===removed.m&&e.d===removed.d&&e.n===removed.n);
     if(ei!==-1) E.splice(ei,1);
@@ -2390,7 +2420,38 @@ render();
 // Auto-open admin panel via URL: ?admin=true
 if(new URLSearchParams(window.location.search).get('admin')==='true'){
     adminAuth();
+    // Strip admin param from URL for security
+    if(window.history.replaceState){
+        const url=new URL(window.location);
+        url.searchParams.delete('admin');
+        window.history.replaceState({},'',url);
+    }
 }
+
+// HTTPS enforcement for production
+if(location.hostname!=='localhost' && location.hostname!=='127.0.0.1' && location.protocol==='http:'){
+    location.replace('https://'+location.hostname+location.pathname+location.search);
+}
+
+// Protect admin panel from right-click inspection
+document.getElementById('adminOverlay').addEventListener('contextmenu',e=>{
+    if(adminAuthenticated) return;
+    e.preventDefault();
+});
+
+// Tamper detection on page load
+(function verifyDataIntegrity(){
+    const customs=JSON.parse(localStorage.getItem('astro_custom_events')||'[]');
+    const storedSig=localStorage.getItem('astro_data_sig');
+    if(customs.length && storedSig){
+        const data=JSON.stringify(customs);
+        let hash=0;
+        for(let i=0;i<data.length;i++){hash=((hash<<5)-hash)+data.charCodeAt(i);hash|=0;}
+        if(storedSig!==hash.toString()){
+            console.warn('⚠️ Custom events data integrity check failed. Data may have been tampered with.');
+        }
+    }
+})();
 </script>
 <script>
 // Register Service Worker for PWA

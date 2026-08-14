@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Astronomical Calendar — Technical Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+@page { margin:20mm; size:A4; }
+@media print {
+    body { font-size:11pt; }
+    .no-print { display:none !important; }
+    h1,h2,h3 { page-break-after:avoid; }
+    table { page-break-inside:avoid; }
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+    font-family:'Inter',sans-serif;
+    line-height:1.7;
+    color:#1a1a2e;
+    background:#fff;
+    max-width:800px;
+    margin:0 auto;
+    padding:40px 30px;
+}
+.print-btn {
+    position:fixed;
+    top:20px;
+    right:20px;
+    padding:12px 24px;
+    background:linear-gradient(135deg,#4f46e5,#7c3aed);
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    font-family:'Inter';
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    box-shadow:0 4px 14px rgba(79,70,229,.4);
+    z-index:100;
+}
+.print-btn:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(79,70,229,.5); }
+.cover {
+    text-align:center;
+    padding:60px 20px;
+    margin-bottom:40px;
+    border-bottom:3px solid #4f46e5;
+}
+.cover h1 { font-size:28px; color:#4f46e5; margin-bottom:8px; }
+.cover h2 { font-size:16px; color:#6b7280; font-weight:500; margin-bottom:20px; }
+.cover .dept { font-size:13px; color:#8b8fa3; line-height:1.8; }
+h2 { font-size:20px; color:#4f46e5; margin:35px 0 15px; padding-bottom:8px; border-bottom:2px solid #eef2ff; }
+h3 { font-size:15px; color:#1a1a2e; margin:20px 0 10px; }
+p { margin:8px 0; font-size:13px; }
+table { width:100%; border-collapse:collapse; margin:12px 0; font-size:12px; }
+th { background:#4f46e5; color:#fff; padding:8px 12px; text-align:left; font-weight:600; }
+td { padding:7px 12px; border-bottom:1px solid #eef0f2; }
+tr:nth-child(even) { background:#f8f9fb; }
+code {
+    background:#f1f3f5;
+    padding:2px 6px;
+    border-radius:4px;
+    font-size:11px;
+    font-family:'Courier New',monospace;
+}
+pre {
+    background:#1a1a2e;
+    color:#a5b4fc;
+    padding:16px;
+    border-radius:10px;
+    overflow-x:auto;
+    font-size:11px;
+    line-height:1.5;
+    margin:10px 0;
+}
+.box {
+    background:#f8f9fb;
+    border:1px solid #eef0f2;
+    border-radius:10px;
+    padding:16px;
+    margin:12px 0;
+}
+.box-purple { border-left:4px solid #4f46e5; }
+.box-green { border-left:4px solid #059669; }
+.box-orange { border-left:4px solid #ea580c; }
+ul { margin:6px 0 6px 20px; font-size:13px; }
+li { margin:3px 0; }
+.security-layer {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:10px 14px;
+    background:#f8f9fb;
+    border-radius:8px;
+    margin:6px 0;
+    font-size:12px;
+}
+.security-num {
+    width:28px; height:28px;
+    background:#4f46e5;
+    color:#fff;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    font-size:11px;
+    flex-shrink:0;
+}
+.stat-grid {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin:12px 0;
+}
+.stat-card {
+    text-align:center;
+    padding:16px;
+    background:#f8f9fb;
+    border-radius:10px;
+    border:1px solid #eef0f2;
+}
+.stat-card .num { font-size:28px; font-weight:800; color:#4f46e5; }
+.stat-card .label { font-size:11px; color:#6b7280; margin-top:4px; }
+.footer {
+    text-align:center;
+    margin-top:40px;
+    padding-top:20px;
+    border-top:2px solid #eef2ff;
+    font-size:11px;
+    color:#8b8fa3;
+}
+</style>
+</head>
+<body>
+
+<button class="print-btn no-print" onclick="window.print()">📄 Save as PDF</button>
+
+<div class="cover">
+    <h1>Astronomical Calendar</h1>
+    <h2>Technical Report & Documentation</h2>
+    <div class="dept">
+        <strong>Postgraduate Department of Physics & Centre for Research</strong><br>
+        Baselius College, Kottayam (Autonomous)<br>
+        NAAC Accredited with A++ Grade<br><br>
+        <strong>An Initiative By:</strong> IEDC | IIC | Department of Physics
+    </div>
+</div>
+
+<h2>1. Project Overview</h2>
+<p>The <strong>Astronomical Calendar</strong> is a web-based application developed for the Postgraduate Department of Physics at Baselius College, Kottayam. It serves as a comprehensive calendar showcasing <strong>467 scientific events</strong> across the year 2026, including scientist birthdays, discoveries, astronomical events, and memorial days.</p>
+
+<div class="stat-grid">
+    <div class="stat-card"><div class="num">467</div><div class="label">Total Events</div></div>
+    <div class="stat-card"><div class="num">366</div><div class="label">Days Covered</div></div>
+    <div class="stat-card"><div class="num">25+</div><div class="label">Indian Scientists</div></div>
+</div>
+
+<div class="box box-purple">
+    <strong>Key Highlights:</strong>
+    <ul>
+        <li>Single-file architecture — entire app in one <code>index.html</code></li>
+        <li>Progressive Web App (PWA) — installable on phones</li>
+        <li>Admin panel with 8-layer security</li>
+        <li>Multi-source references — Wikipedia, Google Scholar, Britannica, Google</li>
+        <li>Responsive design — desktop, tablet, and mobile</li>
+        <li>7 Kerala/Malayali scientists featured prominently</li>
+    </ul>
+</div>
+
+<h2>2. Technology Stack</h2>
+<table>
+    <tr><th>Technology</th><th>Purpose</th></tr>
+    <tr><td>HTML5</td><td>Page structure, semantic markup</td></tr>
+    <tr><td>CSS3</td><td>Styling, animations, responsive design, custom scrollbar</td></tr>
+    <tr><td>Vanilla JavaScript</td><td>All logic, rendering, state management, security</td></tr>
+    <tr><td>Google Fonts (Inter)</td><td>Modern typography</td></tr>
+    <tr><td>Material Symbols</td><td>UI icons</td></tr>
+    <tr><td>Service Worker</td><td>PWA caching, offline support</td></tr>
+    <tr><td>GitHub Pages</td><td>Hosting & deployment</td></tr>
+</table>
+<p><strong>No frameworks used.</strong> The entire application is built with pure HTML, CSS, and JavaScript — no React, Vue, Angular, or any build tools required.</p>
+
+<h2>3. Architecture & Code Structure</h2>
+<p>The application follows a <strong>single-file architecture</strong> where all CSS, HTML, and JavaScript are contained in one <code>index.html</code> file (~2500 lines, ~161 KB).</p>
+
+<pre>
+index.html (~2500 lines)
+├── &lt;head&gt;
+│   ├── Meta tags (SEO, PWA, Security CSP)
+│   ├── Google Fonts links
+│   └── &lt;style&gt; — ALL CSS (~900 lines)
+│       ├── Layout (flexbox: sidebar + main)
+│       ├── Calendar grid (CSS Grid 7 columns)
+│       ├── Event type colors (7 types)
+│       ├── Modal & admin panel styles
+│       ├── Physics dept profile + accordion
+│       └── 3 responsive breakpoints
+├── &lt;body&gt;
+│   ├── Sidebar (logo, dept profile, event list)
+│   ├── Main (topbar, calendar grid, footer)
+│   ├── Modal overlay (event details)
+│   └── Admin panel overlay
+└── &lt;script&gt; — ALL JavaScript (~600 lines)
+    ├── Event data array (467 objects)
+    ├── render() — main rendering engine
+    ├── Search, modals, navigation
+    ├── Security (SHA-256, rate limit, audit)
+    └── Admin CRUD + init sequence
+</pre>
+
+<h2>4. Detailed Code Explanation</h2>
+
+<h3>4.1 CSS Design System</h3>
+<p>The design uses a curated color palette with indigo as the primary color:</p>
+<table>
+    <tr><th>Color</th><th>Hex Code</th><th>Usage</th></tr>
+    <tr><td>Primary</td><td><code>#4f46e5</code></td><td>Buttons, highlights, branding</td></tr>
+    <tr><td>Background</td><td><code>#f8f9fb</code></td><td>Page & card backgrounds</td></tr>
+    <tr><td>Text</td><td><code>#1a1a2e</code></td><td>Primary text color</td></tr>
+    <tr><td>Success</td><td><code>#059669</code></td><td>Achievements, positive</td></tr>
+    <tr><td>Warning</td><td><code>#d97706</code></td><td>Alerts, caution</td></tr>
+    <tr><td>Danger</td><td><code>#ea580c</code></td><td>Eclipses, errors</td></tr>
+</table>
+
+<p><strong>Layout</strong> uses Flexbox for the two-column design:</p>
+<pre>
+.app    { display:flex; height:100vh; }
+.sidebar { width:320px; overflow-y:scroll; }
+.main   { flex:1; overflow:auto; }
+</pre>
+
+<p><strong>Calendar Grid</strong> uses CSS Grid with 7 columns:</p>
+<pre>
+.cal-grid { display:grid; grid-template-columns:repeat(7,1fr); }
+.cal-cell { min-height:85px; cursor:pointer; border:1px solid #eef0f2; }
+</pre>
+
+<h3>4.2 Event Data Structure</h3>
+<p>Each event is a JavaScript object with 7 properties:</p>
+<pre>
+{
+    m: 8,                    // Month (1-12)
+    d: 11,                   // Day (1-31)
+    t: 'birthday',           // Type (7 categories)
+    i: '🔬',                // Emoji icon
+    n: 'E.C.G. Sudarshan',  // Event name
+    x: 'Description...',     // Description text
+    f: 'Quantum Optics'      // Scientific field
+}
+</pre>
+
+<h3>4.3 Event Types & Color Coding</h3>
+<table>
+    <tr><th>Type</th><th>Color</th><th>Count</th><th>Used For</th></tr>
+    <tr><td>birthday</td><td>Indigo (#4f46e5)</td><td>244</td><td>Scientist birthdays</td></tr>
+    <tr><td>achievement</td><td>Green (#059669)</td><td>93</td><td>Discoveries, awards</td></tr>
+    <tr><td>memorial</td><td>Rose (#e11d48)</td><td>50</td><td>Death anniversaries</td></tr>
+    <tr><td>astro</td><td>Blue (#0284c7)</td><td>36</td><td>Astronomical events</td></tr>
+    <tr><td>moon</td><td>Purple (#7c3aed)</td><td>24</td><td>Moon phases</td></tr>
+    <tr><td>intl</td><td>Sky blue (#0284c7)</td><td>14</td><td>International days</td></tr>
+    <tr><td>eclipse</td><td>Orange (#ea580c)</td><td>6</td><td>Solar/lunar eclipses</td></tr>
+</table>
+
+<h3>4.4 The render() Function</h3>
+<p>This is the heart of the calendar. Called every time state changes:</p>
+<pre>
+function render() {
+    // 1. Calculate first day of month & total days
+    const fd = new Date(2026, cM, 1).getDay();
+    const td = new Date(2026, cM+1, 0).getDate();
+
+    // 2. Build calendar grid HTML
+    for(let d=1; d&lt;=td; d++) {
+        const evs = E.filter(e =&gt; e.m === cM+1 && e.d === d);
+        // Create cell with events as colored bars
+    }
+
+    // 3. Update sidebar event list
+    // 4. Highlight today's date
+    // 5. Update event count badges
+}
+</pre>
+
+<h3>4.5 Search System</h3>
+<pre>
+// Real-time filtering as user types
+searchInput.addEventListener('input', function() {
+    const q = this.value.toLowerCase();
+    const results = E.filter(e =&gt;
+        e.n.toLowerCase().includes(q) ||
+        e.x.toLowerCase().includes(q) ||
+        e.f.toLowerCase().includes(q)
+    );
+    // Re-render sidebar with filtered results
+});
+</pre>
+
+<h3>4.6 Multi-Source Reference Links</h3>
+<p>When clicking an event, the modal shows 4 source buttons:</p>
+<pre>
+function openM(idx) {
+    let searchTerm = e.n.split('—')[0].split('(')[0].trim();
+    // Generate links to:
+    // 1. Wikipedia    (encyclopedia)
+    // 2. Google Scholar (research papers)
+    // 3. Britannica   (encyclopedia)
+    // 4. Google       (general search)
+}
+</pre>
+
+<h3>4.7 Admin Panel</h3>
+<p>Password-protected panel for adding/deleting custom events. Accessible via lock icon or <code>?admin=true</code> URL parameter.</p>
+<pre>
+async function adminAuth() {
+    // 1. Check lockout status (5 attempts = 5-min lock)
+    // 2. Prompt for password
+    // 3. Hash with SHA-256
+    // 4. Compare with stored hash
+    // 5. Start 30-minute session timer
+    // 6. Log authentication to audit trail
+}
+</pre>
+
+<h2>5. Features Implemented</h2>
+
+<h3>Core Features</h3>
+<ul>
+    <li>Monthly calendar grid with colored event bars</li>
+    <li>Day selection with event list in sidebar</li>
+    <li>Event detail modal with full descriptions</li>
+    <li>Month navigation (previous / next)</li>
+    <li>"Today" button to jump to current date</li>
+    <li>Real-time event search across all fields</li>
+    <li>Event count statistics pills in topbar</li>
+    <li>Custom styled scrollbar on sidebar</li>
+</ul>
+
+<h3>Content Features</h3>
+<ul>
+    <li>467 curated scientific events (every day covered)</li>
+    <li>25+ Indian scientists including 7 from Kerala</li>
+    <li>Multi-source reference links (Wikipedia, Scholar, Britannica, Google)</li>
+    <li>Physics Department profile with expandable accordion sections</li>
+    <li>College logo banner and branding</li>
+    <li>IEDC, IIC, Department of Physics signature footer</li>
+</ul>
+
+<h3>Technical Features</h3>
+<ul>
+    <li>Progressive Web App — installable, works offline</li>
+    <li>Network-first service worker caching strategy</li>
+    <li>Responsive design (desktop, tablet, mobile)</li>
+    <li>Admin panel with full CRUD for custom events</li>
+    <li>8-layer security architecture</li>
+</ul>
+
+<h2>6. Event Database Statistics</h2>
+
+<div class="stat-grid">
+    <div class="stat-card"><div class="num">244</div><div class="label">Birthdays (52%)</div></div>
+    <div class="stat-card"><div class="num">93</div><div class="label">Achievements (20%)</div></div>
+    <div class="stat-card"><div class="num">50</div><div class="label">Memorials (11%)</div></div>
+</div>
+<div class="stat-grid">
+    <div class="stat-card"><div class="num">36</div><div class="label">Astronomical (8%)</div></div>
+    <div class="stat-card"><div class="num">24</div><div class="label">Moon Phases (5%)</div></div>
+    <div class="stat-card"><div class="num">20</div><div class="label">Intl Days + Eclipses (4%)</div></div>
+</div>
+
+<h3>Indian Scientists Featured (25+)</h3>
+<table>
+    <tr><th>Scientist</th><th>Field</th><th>Achievement</th></tr>
+    <tr><td>C.V. Raman</td><td>Optics</td><td>Nobel Prize — Raman Effect</td></tr>
+    <tr><td>Srinivasa Ramanujan</td><td>Mathematics</td><td>3,900+ mathematical results</td></tr>
+    <tr><td>Satyendra Nath Bose</td><td>Quantum</td><td>Bose-Einstein statistics</td></tr>
+    <tr><td>APJ Abdul Kalam</td><td>Aerospace</td><td>Missile Man of India</td></tr>
+    <tr><td>Homi Bhabha</td><td>Nuclear</td><td>Father of Indian nuclear programme</td></tr>
+    <tr><td>Vikram Sarabhai</td><td>Space</td><td>Father of Indian space programme</td></tr>
+    <tr><td>S. Chandrasekhar</td><td>Astrophysics</td><td>Nobel Prize — Chandrasekhar Limit</td></tr>
+    <tr><td>Meghnad Saha</td><td>Astrophysics</td><td>Saha ionization equation</td></tr>
+    <tr><td>J.C. Bose</td><td>Biophysics</td><td>Radio wave pioneer</td></tr>
+    <tr><td>Har Gobind Khorana</td><td>Mol. Biology</td><td>Nobel Prize — Genetic code</td></tr>
+</table>
+
+<h3>Kerala/Malayali Scientists Featured (7)</h3>
+<table>
+    <tr><th>Scientist</th><th>From</th><th>Field</th></tr>
+    <tr><td><strong>E.C.G. Sudarshan</strong></td><td>Kottayam</td><td>Quantum Optics, V-A theory</td></tr>
+    <tr><td><strong>Anna Mani</strong></td><td>Peermade</td><td>Meteorology, Solar radiation</td></tr>
+    <tr><td><strong>Tessy Thomas</strong></td><td>Alappuzha</td><td>Aerospace — Agni-V missile</td></tr>
+    <tr><td><strong>K. Radhakrishnan</strong></td><td>Irinjalakuda</td><td>ISRO Chairman — Mangalyaan</td></tr>
+    <tr><td><strong>G. Madhavan Nair</strong></td><td>Thiruvananthapuram</td><td>ISRO — Chandrayaan-1</td></tr>
+    <tr><td><strong>V.P.N. Nampoori</strong></td><td>Kerala (CUSAT)</td><td>Photonics, Laser research</td></tr>
+    <tr><td><strong>Nambi Narayanan</strong></td><td>Near Kerala</td><td>Vikas rocket engine</td></tr>
+</table>
+
+<h2>7. Security Implementation</h2>
+<p>The admin panel uses an <strong>8-layer security architecture:</strong></p>
+
+<div class="security-layer"><div class="security-num">1</div><div><strong>Content Security Policy (CSP)</strong> — Blocks unauthorized scripts, styles & resources via meta tag</div></div>
+<div class="security-layer"><div class="security-num">2</div><div><strong>HTTPS Enforcement</strong> — Auto-redirects HTTP to HTTPS on production</div></div>
+<div class="security-layer"><div class="security-num">3</div><div><strong>SHA-256 Password Hashing</strong> — Password stored as hash, never plaintext in code</div></div>
+<div class="security-layer"><div class="security-num">4</div><div><strong>Rate Limiting</strong> — 5 failed login attempts triggers 5-minute account lockout</div></div>
+<div class="security-layer"><div class="security-num">5</div><div><strong>Session Management</strong> — 30-minute auto-timeout, sessionStorage (cleared on tab close)</div></div>
+<div class="security-layer"><div class="security-num">6</div><div><strong>Input Sanitization</strong> — HTML entity escaping prevents XSS attacks, length limits enforced</div></div>
+<div class="security-layer"><div class="security-num">7</div><div><strong>Data Integrity Signing</strong> — Hash signature on localStorage data, tamper detection on load</div></div>
+<div class="security-layer"><div class="security-num">8</div><div><strong>Audit Logging</strong> — All admin actions logged with timestamp and browser info</div></div>
+
+<h2>8. Deployment & PWA</h2>
+
+<div class="box box-green">
+    <strong>Live URL:</strong> https://ameenks318-mdk.github.io/astro-calendar/<br>
+    <strong>Repository:</strong> github.com/ameenks318-mdk/astro-calendar<br>
+    <strong>Branch:</strong> gh-pages<br>
+    <strong>Admin Panel:</strong> Add <code>?admin=true</code> to URL
+</div>
+
+<h3>Service Worker Strategy</h3>
+<p><strong>Network-first</strong> — always serves fresh content when online, falls back to cache when offline. Cache version: <code>astro-calendar-v4</code>.</p>
+
+<h3>PWA Manifest</h3>
+<pre>
+{
+    "name": "Astronomical Calendar",
+    "short_name": "AstroCalendar",
+    "start_url": "./",
+    "display": "standalone",
+    "theme_color": "#4f46e5"
+}
+</pre>
+
+<h2>9. File Structure</h2>
+<pre>
+astro-calendar/
+├── index.html                              (161 KB — Main app)
+├── logo.webp                               (College logo banner)
+├── manifest.json                           (PWA configuration)
+├── sw.js                                   (Service Worker v4)
+├── Astronomical_Calendar_Events_Complete.csv (467 events data)
+└── Astronomical_Calendar_Report.html        (This report)
+</pre>
+
+<div class="footer">
+    <p><strong>Report generated on August 14, 2026</strong></p>
+    <p>Postgraduate Department of Physics & Centre for Research</p>
+    <p>Baselius College, Kottayam (Autonomous)</p>
+    <p>IEDC | IIC | Department of Physics</p>
+</div>
+
+</body>
+</html>

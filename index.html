@@ -743,6 +743,126 @@
         .c-intl { background:#f0f9ff; color:#0369a1; }
         .d-intl { background:#0284c7; }
 
+        .admin-overlay {
+            position:fixed;
+            inset:0;
+            background:rgba(0,0,0,.3);
+            backdrop-filter:blur(4px);
+            z-index:2000;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            opacity:0;
+            visibility:hidden;
+            transition:.25s;
+        }
+
+        .admin-overlay.on { opacity:1; visibility:visible; }
+
+        /* Admin Login Form */
+        .admin-login {
+            padding:30px 24px;
+            text-align:center;
+        }
+
+        .login-icon { font-size:40px; margin-bottom:8px; }
+
+        .login-title {
+            font-size:1.1rem;
+            font-weight:700;
+            color:#1a1a2e;
+            margin-bottom:4px;
+        }
+
+        .login-sub {
+            font-size:.7rem;
+            color:#8b8fa3;
+            margin-bottom:20px;
+        }
+
+        .login-field {
+            text-align:left;
+            margin-bottom:14px;
+        }
+
+        .login-field label {
+            display:block;
+            font-size:.68rem;
+            font-weight:600;
+            color:#3d3d56;
+            margin-bottom:5px;
+        }
+
+        .login-field input {
+            width:100%;
+            padding:10px 14px;
+            border:1.5px solid #e0e1e5;
+            border-radius:10px;
+            font-size:.78rem;
+            font-family:'Inter';
+            outline:none;
+            transition:border .2s;
+        }
+
+        .login-field input:focus {
+            border-color:#4f46e5;
+            box-shadow:0 0 0 3px rgba(79,70,229,.1);
+        }
+
+        .pass-wrap {
+            position:relative;
+        }
+
+        .pass-wrap input { padding-right:40px; }
+
+        .pass-toggle {
+            position:absolute;
+            right:8px;
+            top:50%;
+            transform:translateY(-50%);
+            background:none;
+            border:none;
+            cursor:pointer;
+            color:#8b8fa3;
+            padding:4px;
+        }
+
+        .pass-toggle:hover { color:#4f46e5; }
+
+        .login-btn {
+            width:100%;
+            padding:11px;
+            background:linear-gradient(135deg,#4f46e5,#7c3aed);
+            color:#fff;
+            border:none;
+            border-radius:10px;
+            font-family:'Inter';
+            font-size:.8rem;
+            font-weight:700;
+            cursor:pointer;
+            transition:all .2s;
+            margin-top:6px;
+        }
+
+        .login-btn:hover {
+            transform:translateY(-1px);
+            box-shadow:0 4px 14px rgba(79,70,229,.4);
+        }
+
+        .login-error {
+            font-size:.7rem;
+            color:#e11d48;
+            font-weight:600;
+            min-height:20px;
+            margin:6px 0;
+        }
+
+        .login-lockout {
+            font-size:.65rem;
+            color:#ea580c;
+            margin-top:10px;
+        }
+
         /* ── MODAL ── */
         .modal-overlay {
             position:fixed;
@@ -1130,20 +1250,8 @@
         }
         .admin-btn:hover { background:#f4f5f7; color:#4f46e5; border-color:#c8c9d0; }
 
-        .admin-overlay {
-            position:fixed;
-            inset:0;
-            background:rgba(0,0,0,.35);
-            backdrop-filter:blur(4px);
-            z-index:2000;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            opacity:0;
-            visibility:hidden;
-            transition:.25s;
-        }
-        .admin-overlay.on { opacity:1; visibility:visible; }
+
+
 
         .admin-panel {
             background:#fff;
@@ -1529,7 +1637,30 @@
             <h2><span class="material-symbols-rounded">admin_panel_settings</span> Admin Panel</h2>
             <button class="modal-close" onclick="closeAdmin()">close</button>
         </div>
-        <div class="admin-panel-body">
+
+        <!-- LOGIN FORM -->
+        <div class="admin-login" id="adminLogin">
+            <div class="login-icon">🔐</div>
+            <h3 class="login-title">Admin Login</h3>
+            <p class="login-sub">Enter your credentials to access the admin panel</p>
+            <div class="login-field">
+                <label for="loginPhone">📱 Phone Number</label>
+                <input type="tel" id="loginPhone" placeholder="Enter phone number" maxlength="15" autocomplete="off">
+            </div>
+            <div class="login-field">
+                <label for="loginPass">🔑 Password</label>
+                <div class="pass-wrap">
+                    <input type="password" id="loginPass" placeholder="Enter password" autocomplete="off">
+                    <button type="button" class="pass-toggle" onclick="togglePassVis()"><span class="material-symbols-rounded" id="passEye">visibility_off</span></button>
+                </div>
+            </div>
+            <div class="login-error" id="loginError"></div>
+            <button class="login-btn" onclick="adminLogin()">🔓 Login</button>
+            <div class="login-lockout" id="loginLockout"></div>
+        </div>
+
+        <!-- ADMIN BODY (hidden until login) -->
+        <div class="admin-panel-body" id="adminBody" style="display:none;">
             <div class="admin-form" id="adminForm">
                 <div class="admin-row-3">
                     <label>Month
@@ -2264,23 +2395,55 @@ async function sha256(msg){
     return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
-// Password hash (SHA-256 of 'baselius2024')
-const PWD_HASH='b8cbcb91731e394fcbd5f3220a0bd76651c43cd9d3ebf510afec3c543fa8aa66';
+// Default admin credentials (hashed)
+const ADMIN_PHONE='7025940573';
+const PWD_HASH='3e6aeb3293b6201a82472f0a1b94989d516c35eb466ac07d3599b4c24d5ca0ba';
 
-async function adminAuth(){
+// Show login form or admin panel
+function adminAuth(){
     if(adminAuthenticated){ resetSessionTimer(); showAdmin(); return; }
+    // Show overlay with login form
+    document.getElementById('adminLogin').style.display='block';
+    document.getElementById('adminBody').style.display='none';
+    document.getElementById('loginError').textContent='';
+    document.getElementById('loginPhone').value='';
+    document.getElementById('loginPass').value='';
+    // Check lockout
+    const now=Date.now();
+    if(now<lockoutUntil){
+        const mins=Math.ceil((lockoutUntil-now)/60000);
+        document.getElementById('loginLockout').textContent=`🚫 Account locked. Try again in ${mins} minute(s).`;
+    } else {
+        document.getElementById('loginLockout').textContent='';
+    }
+    document.getElementById('adminOverlay').classList.add('on');
+    setTimeout(()=>document.getElementById('loginPhone').focus(),300);
+}
+
+// Login with phone + password
+async function adminLogin(){
+    const phone=document.getElementById('loginPhone').value.trim();
+    const pw=document.getElementById('loginPass').value;
+    const errEl=document.getElementById('loginError');
 
     // Check lockout
     const now=Date.now();
     if(now<lockoutUntil){
         const mins=Math.ceil((lockoutUntil-now)/60000);
-        alert(`Too many failed attempts. Try again in ${mins} minute(s).`);
+        errEl.textContent=`🚫 Locked. Try again in ${mins} min(s).`;
         return;
     }
 
-    const pw=prompt('🔒 Enter admin password:');
-    if(pw===null) return;
+    if(!phone){ errEl.textContent='📱 Please enter phone number.'; return; }
+    if(!pw){ errEl.textContent='🔑 Please enter password.'; return; }
 
+    // Verify phone number
+    if(phone!==ADMIN_PHONE){
+        handleFailedLogin(errEl);
+        return;
+    }
+
+    // Verify password hash
     const hash=await sha256(pw);
     if(hash===PWD_HASH){
         adminAuthenticated=true;
@@ -2289,22 +2452,48 @@ async function adminAuth(){
         localStorage.removeItem('admin_lockout');
         sessionStorage.setItem('admin_session',Date.now().toString());
         startSessionTimer();
+        logAdminAction('LOGIN','Admin logged in');
+        // Switch to admin panel
+        document.getElementById('adminLogin').style.display='none';
+        document.getElementById('adminBody').style.display='block';
         showAdmin();
     } else {
-        failedAttempts++;
-        localStorage.setItem('admin_fails',failedAttempts.toString());
-        const remaining=MAX_ATTEMPTS-failedAttempts;
-        if(remaining<=0){
-            lockoutUntil=Date.now()+LOCKOUT_MS;
-            localStorage.setItem('admin_lockout',lockoutUntil.toString());
-            failedAttempts=0;
-            localStorage.setItem('admin_fails','0');
-            alert('🚫 Account locked for 5 minutes due to too many failed attempts.');
-        } else {
-            alert(`❌ Incorrect password. ${remaining} attempt(s) remaining.`);
-        }
+        handleFailedLogin(errEl);
     }
 }
+
+function handleFailedLogin(errEl){
+    failedAttempts++;
+    localStorage.setItem('admin_fails',failedAttempts.toString());
+    const remaining=MAX_ATTEMPTS-failedAttempts;
+    if(remaining<=0){
+        lockoutUntil=Date.now()+LOCKOUT_MS;
+        localStorage.setItem('admin_lockout',lockoutUntil.toString());
+        failedAttempts=0;
+        localStorage.setItem('admin_fails','0');
+        errEl.textContent='🚫 Account locked for 5 minutes.';
+        document.getElementById('loginLockout').textContent='Too many failed attempts. Please wait 5 minutes.';
+    } else {
+        errEl.textContent=`❌ Invalid credentials. ${remaining} attempt(s) remaining.`;
+    }
+}
+
+function togglePassVis(){
+    const inp=document.getElementById('loginPass');
+    const eye=document.getElementById('passEye');
+    if(inp.type==='password'){
+        inp.type='text'; eye.textContent='visibility';
+    } else {
+        inp.type='password'; eye.textContent='visibility_off';
+    }
+}
+
+// Allow Enter key to submit login
+document.addEventListener('keydown',function(e){
+    if(e.key==='Enter' && document.getElementById('adminLogin').style.display==='block'){
+        adminLogin();
+    }
+});
 
 function startSessionTimer(){
     clearTimeout(sessionTimer);
@@ -2361,6 +2550,8 @@ function logAdminAction(action,detail){
 function showAdmin(){
     populateAdminForm();
     renderCustomList();
+    document.getElementById('adminLogin').style.display='none';
+    document.getElementById('adminBody').style.display='block';
     document.getElementById('adminOverlay').classList.add('on');
 }
 

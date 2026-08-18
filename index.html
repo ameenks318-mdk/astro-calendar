@@ -1692,6 +1692,28 @@
             <hr class="admin-divider">
             <div class="admin-section-title">Custom Events</div>
             <div class="custom-event-list" id="customList"></div>
+
+            <hr class="admin-divider">
+            <div class="admin-section-title">👥 Manage Admins</div>
+            <div class="admin-form">
+                <div class="admin-row">
+                    <label>📱 Phone Number
+                        <input type="tel" id="newAdminPhone" placeholder="Phone number" maxlength="15">
+                    </label>
+                    <label>🔑 Password
+                        <input type="password" id="newAdminPass" placeholder="Password">
+                    </label>
+                </div>
+                <button class="admin-save-btn" onclick="addNewAdmin()">➕ Add Admin</button>
+            </div>
+            <div class="custom-event-list" id="adminList"></div>
+
+            <hr class="admin-divider">
+            <div class="admin-section-title">📋 All Events (Search & Remove)</div>
+            <div style="margin-bottom:10px;">
+                <input type="text" id="adminEventSearch" placeholder="Search events to remove..." style="width:100%;padding:8px 12px;border:1.5px solid #e0e1e5;border-radius:8px;font-family:Inter;font-size:.75rem;outline:none;" oninput="renderAllEventsList()">
+            </div>
+            <div class="custom-event-list" id="allEventsList" style="max-height:300px;overflow-y:auto;"></div>
         </div>
     </div>
 </div>
@@ -2437,15 +2459,13 @@ async function adminLogin(){
     if(!phone){ errEl.textContent='📱 Please enter phone number.'; return; }
     if(!pw){ errEl.textContent='🔑 Please enter password.'; return; }
 
-    // Verify phone number
-    if(phone!==ADMIN_PHONE){
-        handleFailedLogin(errEl);
-        return;
-    }
-
-    // Verify password hash
+    // Verify credentials (default admin or registered admin)
     const hash=await sha256(pw);
-    if(hash===PWD_HASH){
+    const additionalAdmins=JSON.parse(localStorage.getItem('admin_accounts')||'[]');
+    const isDefaultAdmin=(phone===ADMIN_PHONE && hash===PWD_HASH);
+    const isRegisteredAdmin=additionalAdmins.some(a=>a.phone===phone && a.hash===hash);
+    
+    if(isDefaultAdmin || isRegisteredAdmin){
         adminAuthenticated=true;
         failedAttempts=0;
         localStorage.setItem('admin_fails','0');
@@ -2550,6 +2570,8 @@ function logAdminAction(action,detail){
 function showAdmin(){
     populateAdminForm();
     renderCustomList();
+    renderAdminList();
+    renderAllEventsList();
     document.getElementById('adminLogin').style.display='none';
     document.getElementById('adminBody').style.display='block';
     document.getElementById('adminOverlay').classList.add('on');
@@ -2615,6 +2637,12 @@ function deleteCustomEvent(index){
 function loadCustomEvents(){
     const customs=JSON.parse(localStorage.getItem('astro_custom_events')||'[]');
     customs.forEach(ev=>{ ev.custom=true; E.push(ev); });
+    // Remove deleted built-in events
+    const deleted=getDeletedEvents();
+    deleted.forEach(d=>{
+        const idx=E.findIndex(e=>e.m===d.m&&e.d===d.d&&e.n===d.n);
+        if(idx!==-1) E.splice(idx,1);
+    });
 }
 
 function renderCustomList(){
@@ -2635,6 +2663,127 @@ function renderCustomList(){
             <button class="admin-delete-btn" onclick="deleteCustomEvent(${i})" title="Delete">delete</button>
         </div>`;
     }).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// ADMIN MANAGEMENT
+// ═══════════════════════════════════════════════════
+
+function getAdminAccounts(){
+    return JSON.parse(localStorage.getItem('admin_accounts')||'[]');
+}
+
+async function addNewAdmin(){
+    const phone=document.getElementById('newAdminPhone').value.trim();
+    const pass=document.getElementById('newAdminPass').value;
+    if(!phone||phone.length<10){ alert('📱 Enter a valid phone number (min 10 digits).'); return; }
+    if(!pass||pass.length<6){ alert('🔑 Password must be at least 6 characters.'); return; }
+    const accounts=getAdminAccounts();
+    if(accounts.find(a=>a.phone===phone)){ alert('This phone number is already registered.'); return; }
+    if(phone===ADMIN_PHONE){ alert('This is the default admin number.'); return; }
+    const hash=await sha256(pass);
+    accounts.push({phone,hash,addedOn:new Date().toISOString()});
+    localStorage.setItem('admin_accounts',JSON.stringify(accounts));
+    logAdminAction('ADD_ADMIN','Added admin: '+phone);
+    document.getElementById('newAdminPhone').value='';
+    document.getElementById('newAdminPass').value='';
+    renderAdminList();
+    alert('✅ New admin added successfully!');
+}
+
+function removeAdmin(index){
+    if(!confirm('Are you sure you want to remove this admin?')) return;
+    const accounts=getAdminAccounts();
+    const removed=accounts.splice(index,1)[0];
+    localStorage.setItem('admin_accounts',JSON.stringify(accounts));
+    logAdminAction('REMOVE_ADMIN','Removed admin: '+removed.phone);
+    renderAdminList();
+}
+
+function renderAdminList(){
+    const list=document.getElementById('adminList');
+    const accounts=getAdminAccounts();
+    let html=`<div class="custom-event-item" style="background:#f0f4ff;border-left:3px solid #4f46e5;"><div><strong>📱 7025940573</strong><br><span style="font-size:.6rem;color:#8b8fa3;">Default Admin (cannot be removed)</span></div></div>`;
+    accounts.forEach((a,i)=>{
+        html+=`<div class="custom-event-item"><div><strong>📱 ${a.phone}</strong><br><span style="font-size:.6rem;color:#8b8fa3;">Added: ${new Date(a.addedOn).toLocaleDateString()}</span></div><button class="admin-delete-btn" onclick="removeAdmin(${i})">Remove</button></div>`;
+    });
+    if(!accounts.length) html+=`<div class="custom-empty">No additional admins</div>`;
+    list.innerHTML=html;
+}
+
+// ═══════════════════════════════════════════════════
+// ALL EVENTS MANAGEMENT (DELETE ANY EVENT)
+// ═══════════════════════════════════════════════════
+
+function getDeletedEvents(){
+    return JSON.parse(localStorage.getItem('deleted_events')||'[]');
+}
+
+function removeAnyEvent(m,d,name,isCustom){
+    if(!confirm('Delete "'+name+'"?')) return;
+    if(isCustom){
+        // Remove from custom events
+        const customs=JSON.parse(localStorage.getItem('astro_custom_events')||'[]');
+        const ci=customs.findIndex(e=>e.m===m&&e.d===d&&e.n===name);
+        if(ci!==-1) customs.splice(ci,1);
+        localStorage.setItem('astro_custom_events',JSON.stringify(customs));
+        signData();
+    } else {
+        // Mark built-in event as deleted
+        const deleted=getDeletedEvents();
+        deleted.push({m,d,n:name});
+        localStorage.setItem('deleted_events',JSON.stringify(deleted));
+    }
+    // Remove from live E array
+    const ei=E.findIndex(e=>e.m===m&&e.d===d&&e.n===name);
+    if(ei!==-1) E.splice(ei,1);
+    logAdminAction('DELETE_EVENT',name+' ('+m+'/'+d+')');
+    renderCustomList();
+    renderAllEventsList();
+    render();
+}
+
+function restoreEvent(m,d,name){
+    if(!confirm('Restore "'+name+'"?')) return;
+    const deleted=getDeletedEvents();
+    const di=deleted.findIndex(e=>e.m===m&&e.d===d&&e.n===name);
+    if(di!==-1){
+        deleted.splice(di,1);
+        localStorage.setItem('deleted_events',JSON.stringify(deleted));
+        // Reload page to restore built-in event
+        logAdminAction('RESTORE_EVENT',name);
+        location.reload();
+    }
+}
+
+function renderAllEventsList(){
+    const list=document.getElementById('allEventsList');
+    const searchQ=(document.getElementById('adminEventSearch').value||'').toLowerCase();
+    const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    
+    // Show current events
+    let filtered=E;
+    if(searchQ) filtered=E.filter(e=>e.n.toLowerCase().includes(searchQ)||e.f.toLowerCase().includes(searchQ)||(e.x&&e.x.toLowerCase().includes(searchQ)));
+    
+    let html='';
+    const show=filtered.slice(0,50);
+    show.forEach(e=>{
+        const isC=e.custom?true:false;
+        const escapedName=e.n.replace(/'/g,"\\'").replace(/"/g, "&quot;");
+        html+=`<div class="custom-event-item"><div><strong>${e.i} ${e.n}</strong><br><span style="font-size:.6rem;color:#8b8fa3;">${MN[e.m-1]} ${e.d} | ${e.t}${isC?' | Custom':''}</span></div><button class="admin-delete-btn" onclick="removeAnyEvent(${e.m},${e.d},'${escapedName}',${isC})">Delete</button></div>`;
+    });
+    if(filtered.length>50) html+=`<div class="custom-empty">Showing 50 of ${filtered.length} results. Refine your search.</div>`;
+    if(!filtered.length) html+=`<div class="custom-empty">No events found</div>`;
+    
+    // Also show deleted events that can be restored
+    const deleted=getDeletedEvents();
+    if(deleted.length && !searchQ){
+        html+=`<div class="admin-section-title" style="margin-top:10px;">🗑️ Deleted Events (click to restore)</div>`;
+        deleted.forEach(d=>{
+            html+=`<div class="custom-event-item" style="opacity:.6;border-left:3px solid #e11d48;"><div><strong>${d.n}</strong><br><span style="font-size:.6rem;color:#e11d48;">Deleted | ${MN[d.m-1]} ${d.d}</span></div><button class="admin-delete-btn" style="background:#059669;" onclick="restoreEvent(${d.m},${d.d},'${d.n.replace(/'/g,"\\'").replace(/"/g, "&quot;")}')">Restore</button></div>`;
+        });
+    }
+    list.innerHTML=html;
 }
 
 function clearSearch(){
